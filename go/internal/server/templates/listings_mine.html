@@ -1,0 +1,16 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>My listings</h1>
+  <a class="button" href="/listings/new">Post a listing</a>
+</div>
+
+{{if .Empty}}
+<div class="empty-state"><p>You haven&#39;t posted any listings yet.</p></div>
+{{else}}
+<div class="listing-row-list">
+  {{range .Listings}}{{template "my_listing_row" .}}{{end}}
+</div>
+{{end}}
+
+{{template "pagination_nav" .Pagination}}
+{{end}}

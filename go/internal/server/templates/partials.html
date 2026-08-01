@@ -1,0 +1,131 @@
+{{/* listing_card renders one ListingCardView as a clickable summary - used by home.html. */}}
+{{define "listing_card"}}
+<a class="listing-card" href="/listings/{{.ID}}">
+  <div class="listing-card-head">
+    <h3 class="listing-card-title">{{.Title}}</h3>
+    <span class="status-badge status-badge-{{.Status}}">{{.StatusLabel}}</span>
+  </div>
+  <p class="listing-card-desc">{{.Description}}</p>
+  <div class="listing-card-meta">
+    <span class="listing-budget">{{.BudgetDisplay}}</span>
+    {{if .Category}}<span class="pill">{{.Category}}</span>{{end}}
+  </div>
+  <p class="muted listing-card-footer">Posted by {{.ClientName}} · {{.PostedLabel}}</p>
+</a>
+{{end}}
+
+{{/* my_listing_row renders one MyListingItemView (a listing card plus a proposal count) - used
+     by listings_mine.html. */}}
+{{define "my_listing_row"}}
+<a class="listing-row" href="/listings/{{.ID}}">
+  <div class="listing-row-head">
+    <h3 class="listing-card-title">{{.Title}}</h3>
+    <span class="status-badge status-badge-{{.Status}}">{{.StatusLabel}}</span>
+  </div>
+  <div class="listing-row-meta">
+    <span class="listing-budget">{{.BudgetDisplay}}</span>
+    <span class="muted">{{.ProposalCount}} proposal{{if ne .ProposalCount 1}}s{{end}}</span>
+    <span class="muted">{{.PostedLabel}}</span>
+  </div>
+</a>
+{{end}}
+
+{{/* proposal_item renders one ProposalItemView on the owning client's "proposals received"
+     panel, with accept/reject controls when still pending. Used by listing_detail_fragment.html.
+     Accept/reject post to /proposals/{id}/accept|reject - the server re-derives ownership of the
+     proposal's parent listing from the fetched documents themselves (see
+     handlers_proposals.go's resolveOwnedProposal), never from anything this form submits. */}}
+{{define "proposal_item"}}
+<div class="proposal-item">
+  <div class="proposal-item-head">
+    <div>
+      <p class="proposal-freelancer">{{.FreelancerName}}</p>
+      <p class="muted">{{.RateDisplay}} · {{.PostedLabel}}</p>
+    </div>
+    <span class="status-badge status-badge-{{.Status}}">{{.StatusLabel}}</span>
+  </div>
+  <p class="proposal-cover">{{.CoverLetter}}</p>
+  {{if .CanAct}}
+  <div class="proposal-actions">
+    <form method="post" action="/proposals/{{.ID}}/accept" class="inline-form">
+      <button type="submit" class="button button-sm">Accept</button>
+    </form>
+    <form method="post" action="/proposals/{{.ID}}/reject" class="inline-form">
+      <button type="submit" class="button button-outline button-sm">Reject</button>
+    </form>
+  </div>
+  {{end}}
+</div>
+{{end}}
+
+{{/* message_item renders one MessageItemView chat bubble. Used by listing_detail_fragment.html. */}}
+{{define "message_item"}}
+<div class="message-row {{if .IsOwn}}message-row-own{{end}}">
+  <span class="avatar avatar-sm">{{.Initials}}</span>
+  <div class="message-bubble {{if .IsOwn}}message-bubble-own{{end}}">
+    <p class="message-content">{{.Content}}</p>
+    <p class="message-meta">{{.SenderName}} · {{.SentLabel}}</p>
+  </div>
+</div>
+{{end}}
+
+{{/* pagination_nav renders a PaginationView's prev/next pager. Used by home.html,
+     listings_mine.html, proposals_mine.html. */}}
+{{define "pagination_nav"}}
+{{if gt .TotalPages 1}}
+<nav class="pagination" aria-label="Pagination">
+  {{if .HasPrev}}<a class="button button-outline button-sm" href="{{.PrevURL}}">&larr; Previous</a>{{else}}<span></span>{{end}}
+  <span class="muted pagination-status">Page {{.Page}} of {{.TotalPages}}</span>
+  {{if .HasNext}}<a class="button button-outline button-sm" href="{{.NextURL}}">Next &rarr;</a>{{else}}<span></span>{{end}}
+</nav>
+{{end}}
+{{end}}
+
+{{/* listing_detail_body renders the proposals panel + message thread - shared by
+     listing_detail.html (initial render, wrapped in a div the poll script replaces) and
+     listing_detail_fragment.html (the poll target itself), so they can never drift out of sync. */}}
+{{define "listing_detail_body"}}
+{{if .IsOwningClient}}
+<section class="panel">
+  <h2>Proposals received</h2>
+  {{if .ProposalsEmpty}}
+  <p class="muted">No proposals yet.</p>
+  {{else}}
+  <div class="proposal-list">
+    {{range .Proposals}}{{template "proposal_item" .}}{{end}}
+  </div>
+  {{end}}
+</section>
+{{end}}
+
+{{if .ViewerIsFreelancer}}
+<section class="panel">
+  <h2>Your proposal</h2>
+  {{if .OwnProposal}}
+  <div class="proposal-item">
+    <div class="proposal-item-head">
+      <p class="muted">Your proposed rate: {{.OwnProposal.RateDisplay}}</p>
+      <span class="status-badge status-badge-{{.OwnProposal.Status}}">{{.OwnProposal.StatusLabel}}</span>
+    </div>
+    <p class="proposal-cover">{{.OwnProposal.CoverLetter}}</p>
+  </div>
+  {{else if .CanSubmitProposal}}
+  <p class="muted">Submit a proposal using the form on this page.</p>
+  {{end}}
+</section>
+{{end}}
+
+{{if .CanMessage}}
+<section class="panel">
+  <h2>Messages</h2>
+  <p class="muted">Visible to the client and the accepted freelancer.</p>
+  <div class="message-list">
+    {{if .MessagesEmpty}}
+    <p class="muted">No messages yet — say hello.</p>
+    {{else}}
+    {{range .Messages}}{{template "message_item" .}}{{end}}
+    {{end}}
+  </div>
+</section>
+{{end}}
+{{end}}

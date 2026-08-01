@@ -1,0 +1,68 @@
+{{define "content"}}
+<div class="listing-detail-header">
+  <div>
+    <h1>{{.Listing.Title}}</h1>
+    <p class="muted">Posted by {{.Listing.ClientName}} · {{.PostedLabel}}</p>
+  </div>
+  <span class="status-badge status-badge-{{.Listing.Status}}">{{.StatusLabel}}</span>
+</div>
+
+<p class="listing-detail-desc">{{.Listing.Description}}</p>
+<div class="listing-detail-meta">
+  <span class="listing-budget">{{.BudgetDisplay}}</span>
+  {{if .Listing.Category}}<span class="pill">{{.Listing.Category}}</span>{{end}}
+</div>
+
+{{if .IsOwningClient}}
+<a class="button button-outline button-sm" href="/listings/{{.Listing.ID}}/edit">Edit listing</a>
+{{end}}
+
+{{if .CanSubmitProposal}}
+<section class="panel">
+  <h2>Submit a proposal</h2>
+  <form method="post" action="/listings/{{.Listing.ID}}/proposals" class="stacked">
+    <div class="field">
+      <label for="coverLetter">Cover letter</label>
+      <textarea id="coverLetter" name="coverLetter" rows="5" minlength="20" maxlength="3000" placeholder="Explain why you're a good fit for this job…" required></textarea>
+    </div>
+    <div class="field">
+      <label for="proposedRate">Proposed rate (USD)</label>
+      <input id="proposedRate" type="number" name="proposedRate" min="1" step="1" required>
+    </div>
+    <button type="submit" class="button">Submit proposal</button>
+  </form>
+</section>
+{{end}}
+
+<div id="listing-detail-body">{{template "listing_detail_body" .}}</div>
+
+{{if .CanMessage}}
+<section class="panel">
+  <h2>Send a message</h2>
+  <form method="post" action="/listings/{{.Listing.ID}}/messages" class="stacked">
+    <div class="field">
+      <textarea name="content" rows="2" maxlength="2000" placeholder="Write a message…" required></textarea>
+    </div>
+    <button type="submit" class="button button-sm">Send</button>
+  </form>
+</section>
+{{end}}
+
+{{if not .IsSignedIn}}
+<p class="muted center-note"><a href="/login">Sign in</a> to submit a proposal or message about this listing.</p>
+{{end}}
+
+<script>
+(function () {
+  var container = document.getElementById("listing-detail-body");
+  function refresh() {
+    fetch(window.location.pathname + "/fragment")
+      .then(function (res) { if (!res.ok) throw new Error("refresh failed"); return res.text(); })
+      .then(function (html) { container.innerHTML = html; })
+      .catch(function () { /* keep showing the last good state; try again next tick */ })
+      .finally(function () { setTimeout(refresh, 4000); });
+  }
+  setTimeout(refresh, 4000);
+})();
+</script>
+{{end}}

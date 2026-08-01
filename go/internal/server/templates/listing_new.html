@@ -1,0 +1,26 @@
+{{define "content"}}
+<div class="form-card">
+  <h1>Post a listing</h1>
+  <form method="post" action="/listings/new" class="stacked">
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" type="text" name="title" minlength="3" maxlength="120" placeholder="e.g. Build a marketing landing page" required>
+    </div>
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="6" minlength="20" maxlength="5000" placeholder="Describe the scope, deliverables, and timeline…" required></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="budget">Budget (USD)</label>
+        <input id="budget" type="number" name="budget" min="1" step="1" required>
+      </div>
+      <div class="field">
+        <label for="category">Category (optional)</label>
+        <input id="category" type="text" name="category" maxlength="60" placeholder="e.g. Web Development">
+      </div>
+    </div>
+    <button type="submit" class="button">Post listing</button>
+  </form>
+</div>
+{{end}}

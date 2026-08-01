@@ -1,0 +1,42 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>Find your next project</h1>
+  <p class="muted">Browse open listings posted by clients looking for freelancers.</p>
+</div>
+
+<form method="get" action="/" class="filters-form">
+  <div class="field filters-search">
+    <label for="q">Search</label>
+    <input id="q" type="text" name="q" value="{{.Search}}" placeholder="Search title or description…">
+  </div>
+  <div class="field">
+    <label for="category">Category</label>
+    <select id="category" name="category">
+      <option value="">All categories</option>
+      {{$current := .Category}}
+      {{range .Categories}}
+      <option value="{{.}}" {{if eq . $current}}selected{{end}}>{{.}}</option>
+      {{end}}
+    </select>
+  </div>
+  <div class="field">
+    <label for="minBudget">Min budget</label>
+    <input id="minBudget" type="number" inputmode="numeric" name="minBudget" value="{{.MinBudget}}" min="0" placeholder="Min">
+  </div>
+  <div class="field">
+    <label for="maxBudget">Max budget</label>
+    <input id="maxBudget" type="number" inputmode="numeric" name="maxBudget" value="{{.MaxBudget}}" min="0" placeholder="Max">
+  </div>
+  <button type="submit" class="button">Apply filters</button>
+</form>
+
+{{if .Empty}}
+<div class="empty-state"><p>No listings match your filters.</p></div>
+{{else}}
+<div class="listing-grid">
+  {{range .Listings}}{{template "listing_card" .}}{{end}}
+</div>
+{{end}}
+
+{{template "pagination_nav" .Pagination}}
+{{end}}

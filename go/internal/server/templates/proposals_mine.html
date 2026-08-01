@@ -1,0 +1,27 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>My proposals</h1>
+  <p class="muted">Every proposal you&#39;ve submitted, across all listings.</p>
+</div>
+
+{{if .Empty}}
+<div class="empty-state"><p>You haven&#39;t submitted any proposals yet. <a href="/">Browse listings</a>.</p></div>
+{{else}}
+<div class="listing-row-list">
+  {{range .Proposals}}
+  <a class="listing-row" href="/listings/{{.ListingID}}">
+    <div class="listing-row-head">
+      <h3 class="listing-card-title">{{.ListingTitle}}</h3>
+      <span class="status-badge status-badge-{{.Status}}">{{.StatusLabel}}</span>
+    </div>
+    <div class="listing-row-meta">
+      <span>Your rate: {{.RateDisplay}}</span>
+      <span class="muted">{{.PostedLabel}}</span>
+    </div>
+  </a>
+  {{end}}
+</div>
+{{end}}
+
+{{template "pagination_nav" .Pagination}}
+{{end}}

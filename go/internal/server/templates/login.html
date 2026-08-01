@@ -1,0 +1,41 @@
+{{define "content"}}
+<div class="login-card">
+  <h1>Sign in</h1>
+
+  {{/* Quick-fill demo accounts - the two pre-provisioned, pre-verified role accounts named in the
+       task (see plan/build-plan.md). The password is a public demo credential, not a secret -
+       documented here and in README.md, never used for anything beyond this shared showcase
+       project. */}}
+  <div class="quickfill-row">
+    <form method="post" action="/login" class="inline-form">
+      <input type="hidden" name="email" value="market.client.demo@gmail.com">
+      <input type="hidden" name="password" value="DemoTest123!">
+      <input type="hidden" name="redirect" value="{{.Redirect}}">
+      <button type="submit" class="button button-outline button-sm">Client demo</button>
+    </form>
+    <form method="post" action="/login" class="inline-form">
+      <input type="hidden" name="email" value="market.freelancer.demo@gmail.com">
+      <input type="hidden" name="password" value="DemoTest123!">
+      <input type="hidden" name="redirect" value="{{.Redirect}}">
+      <button type="submit" class="button button-outline button-sm">Freelancer demo</button>
+    </form>
+  </div>
+
+  <div class="divider"><span>or sign in manually</span></div>
+
+  <form method="post" action="/login" class="stacked">
+    <input type="hidden" name="redirect" value="{{.Redirect}}">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" autocomplete="email" placeholder="market.client.demo@gmail.com" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="button">Sign in</button>
+  </form>
+
+  <p class="muted center-note">Don&#39;t have an account? <a href="/register">Create one</a>.</p>
+</div>
+{{end}}

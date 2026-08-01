@@ -1,0 +1,35 @@
+{{define "content"}}
+<div class="form-card">
+  <h1>Edit listing</h1>
+  <p class="muted">Update the details or change its status.</p>
+  <form method="post" action="/listings/{{.ID}}/edit" class="stacked">
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" type="text" name="title" value="{{.ListingTitle}}" minlength="3" maxlength="120" required>
+    </div>
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="6" minlength="20" maxlength="5000" required>{{.Description}}</textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="budget">Budget (USD)</label>
+        <input id="budget" type="number" name="budget" value="{{.Budget}}" min="1" step="1" required>
+      </div>
+      <div class="field">
+        <label for="category">Category (optional)</label>
+        <input id="category" type="text" name="category" value="{{.Category}}" maxlength="60">
+      </div>
+    </div>
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        {{range .Statuses}}
+        <option value="{{.Value}}" {{if .Selected}}selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select>
+    </div>
+    <button type="submit" class="button">Save changes</button>
+  </form>
+</div>
+{{end}}

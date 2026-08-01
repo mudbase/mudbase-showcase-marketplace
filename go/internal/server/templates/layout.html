@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{if .Title}}{{.Title}} · {{end}}Mudbase Marketplace</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="/">Mudbase<span class="brand-accent">Marketplace</span></a>
+      <nav class="nav">
+        <a href="/">Browse</a>
+        {{if .IsClient}}
+        <a href="/listings/mine">My listings</a>
+        <a href="/listings/new">Post a listing</a>
+        {{end}}
+        {{if .IsFreelancer}}
+        <a href="/proposals/mine">My proposals</a>
+        {{end}}
+      </nav>
+      <div class="header-right">
+        {{if .IsSignedIn}}
+          <span class="header-user">{{.DisplayName}}</span>
+          <span class="role-badge role-badge-{{.Role}}">{{.RoleLabel}}</span>
+          <form method="post" action="/logout" class="inline-form">
+            <button type="submit" class="link-button">Sign out</button>
+          </form>
+        {{else}}
+          <a href="/login" class="button button-outline button-sm">Sign in</a>
+          <a href="/register" class="button button-sm">Create account</a>
+        {{end}}
+      </div>
+    </div>
+  </header>
+
+  <main class="container page">
+    {{if .FlashError}}<p class="flash flash-error" role="alert">{{.FlashError}}</p>{{end}}
+    {{if .FlashSuccess}}<p class="flash flash-success" role="status">{{.FlashSuccess}}</p>{{end}}
+    {{template "content" .}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Every listing, proposal, and message on this page is served by a real Mudbase project — no custom backend, built in Go against the official Mudbase Go SDK.</p>
+    </div>
+  </footer>
+</body>
+</html>
