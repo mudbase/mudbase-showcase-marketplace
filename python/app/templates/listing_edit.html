@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Edit listing{% endblock %}
+{% block content %}
+  <div class="container" style="max-width: 640px; padding: 0;">
+    <div class="card">
+      <div class="card-body">
+        <h1>Edit listing</h1>
+        <p class="muted text-sm" style="margin-bottom: 1.5rem;">Update the details or change its status.</p>
+
+        {% if form_error %}<div class="form-error" role="alert">{{ form_error }}</div>{% endif %}
+
+        <form method="post" action="/listings/{{ listing.id }}/edit" novalidate>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" maxlength="120" value="{{ listing.title }}" required />
+            {% if errors.title %}<p class="field-error">{{ errors.title }}</p>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="6" required>{{ listing.description }}</textarea>
+            {% if errors.description %}<p class="field-error">{{ errors.description }}</p>{% endif %}
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="budget">Budget (USD)</label>
+              <input type="number" id="budget" name="budget" min="1" step="1" value="{{ listing.budget | int }}" required />
+              {% if errors.budget %}<p class="field-error">{{ errors.budget }}</p>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="category">Category (optional)</label>
+              <input type="text" id="category" name="category" maxlength="60" value="{{ listing.category or '' }}" />
+              {% if errors.category %}<p class="field-error">{{ errors.category }}</p>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              {% for s in ["open", "in_progress", "completed"] %}
+                <option value="{{ s }}" {% if listing.status == s %}selected{% endif %}>{{ s | listing_status }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

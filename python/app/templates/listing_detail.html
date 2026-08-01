@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{% if listing %}{{ listing.title }}{% else %}Listing not found{% endif %}{% endblock %}
+{% block content %}
+  {% if not listing %}
+    <div style="text-align:center; padding: 4rem 0;">
+      <p class="muted">This listing couldn&#39;t be found.</p>
+      <a class="btn btn-outline" href="/" style="margin-top:1rem;">Back to listings</a>
+    </div>
+  {% else %}
+    {% set status_variant = {"open": "success", "in_progress": "warning", "completed": "secondary"} %}
+    <div class="container" style="max-width: 720px; padding: 0;">
+      <div class="card">
+        <div class="card-body">
+          <div class="listing-detail-header">
+            <div>
+              <h1>{{ listing.title }}</h1>
+              <p class="listing-detail-meta">Posted by {{ listing.client_name }} &middot; {{ listing.created_at | relative_time }}</p>
+            </div>
+            <span class="badge badge-{{ status_variant.get(listing.status, 'outline') }}">{{ listing.status | listing_status }}</span>
+          </div>
+          <p class="listing-detail-body">{{ listing.description }}</p>
+          <div class="listing-detail-facts">
+            <span class="listing-card-budget">{{ listing.budget | currency }}</span>
+            {% if listing.category %}<span class="badge badge-outline">{{ listing.category }}</span>{% endif %}
+          </div>
+          {% if is_owning_client %}
+            <a class="btn btn-outline btn-sm" href="/listings/{{ listing.id }}/edit" style="margin-top:1rem;">Edit listing</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if is_freelancer %}
+        <div class="card">
+          <div class="card-body">
+            <h2>Your proposal</h2>
+            {% if own_proposal %}
+              {% set status_variant2 = {"pending": "warning", "accepted": "success", "rejected": "destructive"} %}
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span class="muted text-sm">Your proposed rate: {{ own_proposal.proposed_rate | currency }}</span>
+                <span class="badge badge-{{ status_variant2.get(own_proposal.status, 'outline') }}">{{ own_proposal.status | proposal_status }}</span>
+              </div>
+              <p class="listing-detail-body">{{ own_proposal.cover_letter }}</p>
+            {% else %}
+              <form method="post" action="/listings/{{ listing.id }}/proposals" novalidate>
+                <div class="form-group">
+                  <label for="cover_letter">Cover letter</label>
+                  <textarea id="cover_letter" name="cover_letter" rows="5" placeholder="Explain why you're a good fit for this job…" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="proposed_rate">Proposed rate (USD)</label>
+                  <input type="number" id="proposed_rate" name="proposed_rate" min="1" step="1" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Submit proposal</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if is_owning_client %}
+        <div class="card">
+          <div class="card-body">
+            <h2>Proposals received</h2>
+            {% if not proposals %}
+              <p class="muted text-sm">No proposals yet.</p>
+            {% else %}
+              {% for proposal in proposals %}
+                {% include "partials/proposal_item.html" with context %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if can_message %}
+        <div class="card">
+          <div class="card-body">
+            <h2>Messages</h2>
+            <p class="muted text-sm" style="margin-bottom:1rem;">Visible to the client and the accepted freelancer.</p>
+            <div class="message-thread">
+              {% if not messages %}
+                <p class="muted text-sm">No messages yet — say hello.</p>
+              {% else %}
+                {% for message in messages %}
+                  {% include "partials/message_row.html" with context %}
+                {% endfor %}
+              {% endif %}
+            </div>
+            <form method="post" action="/listings/{{ listing.id }}/messages" class="message-composer">
+              <textarea name="content" rows="2" placeholder="Write a message…" required></textarea>
+              <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if not is_authenticated %}
+        <p class="muted text-sm" style="text-align:center;">
+          <a href="/login?next=/listings/{{ listing.id }}">Sign in</a> to submit a proposal or message about this listing.
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

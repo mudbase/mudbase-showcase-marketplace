@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Find your next project{% endblock %}
+{% block content %}
+  <div class="section-head" style="flex-direction: column; align-items: flex-start; gap: 0.35rem;">
+    <h1>Find your next project</h1>
+    <p class="muted text-sm">Browse open listings posted by clients looking for freelancers.</p>
+  </div>
+
+  <form method="get" action="/" class="filters-bar">
+    <div class="form-group">
+      <label for="q">Search</label>
+      <input type="search" id="q" name="q" placeholder="Search title or description…" value="{{ search }}" />
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="" {% if not category %}selected{% endif %}>All categories</option>
+        {% for c in categories %}
+          <option value="{{ c }}" {% if category == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Budget range</label>
+      <div class="budget-row">
+        <input type="number" name="min_budget" placeholder="Min" min="0" value="{{ min_budget }}" />
+        <input type="number" name="max_budget" placeholder="Max" min="0" value="{{ max_budget }}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-block">Apply filters</button>
+    </div>
+  </form>
+
+  {% if load_error %}
+    <p class="error-state">{{ load_error }}</p>
+  {% elif not listings %}
+    <div class="empty-state">No listings match your filters.</div>
+  {% else %}
+    <div class="listing-grid">
+      {% for listing in listings %}
+        {% include "partials/listing_card.html" with context %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if total_pages > 1 %}
+    <div class="pagination-row">
+      <p class="muted text-sm">Page {{ page }} of {{ total_pages }} &middot; {{ total }} total</p>
+      <div style="display:flex; gap:0.5rem;">
+        {% set qs = "q=" ~ (search | urlencode) ~ "&category=" ~ (category | urlencode) ~ "&min_budget=" ~ (min_budget | urlencode) ~ "&max_budget=" ~ (max_budget | urlencode) %}
+        <a class="btn btn-outline btn-sm {% if page <= 1 %}btn-disabled{% endif %}"
+           href="/?{{ qs }}&page={{ page - 1 }}"
+           {% if page <= 1 %}aria-disabled="true" tabindex="-1" style="pointer-events:none; opacity:0.5;"{% endif %}>&larr; Previous</a>
+        <a class="btn btn-outline btn-sm {% if page >= total_pages %}btn-disabled{% endif %}"
+           href="/?{{ qs }}&page={{ page + 1 }}"
+           {% if page >= total_pages %}aria-disabled="true" tabindex="-1" style="pointer-events:none; opacity:0.5;"{% endif %}>Next &rarr;</a>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

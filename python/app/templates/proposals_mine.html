@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My proposals{% endblock %}
+{% block content %}
+  {% set status_variant = {"pending": "warning", "accepted": "success", "rejected": "destructive"} %}
+  <div class="section-head" style="flex-direction: column; align-items: flex-start; gap: 0.35rem;">
+    <h1>My proposals</h1>
+    <p class="muted text-sm">Every proposal you&#39;ve submitted, across all listings.</p>
+  </div>
+
+  {% if load_error %}
+    <p class="error-state">{{ load_error }}</p>
+  {% elif not proposals %}
+    <div class="empty-state">You haven&#39;t submitted any proposals yet. <a href="/">Browse listings</a>.</div>
+  {% else %}
+    {% for proposal in proposals %}
+      {% set listing = listings_by_id.get(proposal.listing_id) %}
+      <a class="card linked" style="display:block; text-decoration:none; color:inherit;" href="/listings/{{ proposal.listing_id }}">
+        <div class="card-body">
+          <div class="listing-card-title-row">
+            <p class="listing-card-title">{{ listing.title if listing else "Listing" }}</p>
+            <span class="badge badge-{{ status_variant.get(proposal.status, 'outline') }}">{{ proposal.status | proposal_status }}</span>
+          </div>
+          <div class="listing-card-footer">
+            <span>Your rate: {{ proposal.proposed_rate | currency }}</span>
+            <span>{{ proposal.created_at | relative_time }}</span>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  {% endif %}
+
+  {% if pagination and pagination.total_pages > 1 %}
+    <div class="pagination-row">
+      <p class="muted text-sm">Page {{ pagination.page }} of {{ pagination.total_pages }} &middot; {{ pagination.total }} total</p>
+      <div style="display:flex; gap:0.5rem;">
+        <a class="btn btn-outline btn-sm" href="/proposals?page={{ pagination.page - 1 }}"
+           {% if pagination.page <= 1 %}style="pointer-events:none; opacity:0.5;"{% endif %}>&larr; Previous</a>
+        <a class="btn btn-outline btn-sm" href="/proposals?page={{ pagination.page + 1 }}"
+           {% if not pagination.has_more %}style="pointer-events:none; opacity:0.5;"{% endif %}>Next &rarr;</a>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

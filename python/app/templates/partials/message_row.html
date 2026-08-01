@@ -1,0 +1,8 @@
+{% set is_own = current_user and message.sender_id == current_user.id %}
+<div class="message-row {% if is_own %}own{% endif %}">
+  <span class="avatar">{{ message.sender_name | initial }}</span>
+  <div class="message-bubble">
+    <p class="message-content">{{ message.content }}</p>
+    <p class="message-meta">{{ message.sender_name }} &middot; {{ message.created_at | date }}</p>
+  </div>
+</div>

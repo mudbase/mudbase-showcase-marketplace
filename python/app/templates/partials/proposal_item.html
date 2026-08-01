@@ -1,0 +1,23 @@
+{% set status_variant = {"pending": "warning", "accepted": "success", "rejected": "destructive"} %}
+<div class="card proposal-item">
+  <div class="card-body">
+    <div class="proposal-item-header">
+      <div>
+        <p class="listing-card-title" style="margin:0;">{{ proposal.freelancer_name }}</p>
+        <p class="proposal-item-meta">{{ proposal.proposed_rate | currency }} &middot; {{ proposal.created_at | relative_time }}</p>
+      </div>
+      <span class="badge badge-{{ status_variant.get(proposal.status, 'outline') }}">{{ proposal.status | proposal_status }}</span>
+    </div>
+    <p class="proposal-item-body">{{ proposal.cover_letter }}</p>
+    {% if proposal.status == "pending" %}
+      <div class="proposal-actions">
+        <form method="post" action="/proposals/{{ proposal.id }}/accept" class="inline-form">
+          <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+        </form>
+        <form method="post" action="/proposals/{{ proposal.id }}/reject" class="inline-form">
+          <button type="submit" class="btn btn-outline btn-sm">Reject</button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Post a new listing{% endblock %}
+{% block content %}
+  <div class="container" style="max-width: 640px; padding: 0;">
+    <div class="card">
+      <div class="card-body">
+        <h1>Post a new listing</h1>
+        <p class="muted text-sm" style="margin-bottom: 1.5rem;">Freelancers will be able to browse and submit proposals immediately.</p>
+
+        {% if form_error %}<div class="form-error" role="alert">{{ form_error }}</div>{% endif %}
+
+        <form method="post" action="/listings" novalidate>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" maxlength="120" placeholder="e.g. Build a marketing landing page" required />
+            {% if errors.title %}<p class="field-error">{{ errors.title }}</p>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="6" placeholder="Describe the scope, deliverables, and timeline…" required></textarea>
+            {% if errors.description %}<p class="field-error">{{ errors.description }}</p>{% endif %}
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="budget">Budget (USD)</label>
+              <input type="number" id="budget" name="budget" min="1" step="1" required />
+              {% if errors.budget %}<p class="field-error">{{ errors.budget }}</p>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="category">Category (optional)</label>
+              <input type="text" id="category" name="category" maxlength="60" placeholder="e.g. Web Development" />
+              {% if errors.category %}<p class="field-error">{{ errors.category }}</p>{% endif %}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Post listing</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% set status_variant = {"open": "success", "in_progress": "warning", "completed": "secondary"} %}
+<a class="card listing-card linked" href="/listings/{{ listing.id }}">
+  <div class="card-body">
+    <div class="listing-card-title-row">
+      <p class="listing-card-title">{{ listing.title }}</p>
+      <span class="badge badge-{{ status_variant.get(listing.status, 'outline') }}">{{ listing.status | listing_status }}</span>
+    </div>
+    <p class="listing-card-desc">{{ listing.description }}</p>
+    <div class="listing-card-footer">
+      <span class="listing-card-budget">{{ listing.budget | currency }}</span>
+      <span>
+        {% if listing.category %}<span class="badge badge-outline">{{ listing.category }}</span>{% endif %}
+        {{ listing.created_at | relative_time }}
+      </span>
+    </div>
+  </div>
+</a>

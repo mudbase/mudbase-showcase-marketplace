@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}My listings{% endblock %}
+{% block content %}
+  {% set status_variant = {"open": "success", "in_progress": "warning", "completed": "secondary"} %}
+  <div class="section-head">
+    <h1>My listings</h1>
+    <a class="btn btn-primary" href="/listings/new">Post a listing</a>
+  </div>
+
+  {% if load_error %}
+    <p class="error-state">{{ load_error }}</p>
+  {% elif not listings %}
+    <div class="empty-state">You haven&#39;t posted any listings yet.</div>
+  {% else %}
+    {% for listing in listings %}
+      <a class="card linked" style="display:block; text-decoration:none; color:inherit;" href="/listings/{{ listing.id }}">
+        <div class="card-body">
+          <div class="listing-card-title-row">
+            <p class="listing-card-title">{{ listing.title }}</p>
+            <span class="badge badge-{{ status_variant.get(listing.status, 'outline') }}">{{ listing.status | listing_status }}</span>
+          </div>
+          <div class="listing-card-footer">
+            <span class="listing-card-budget">{{ listing.budget | currency }}</span>
+            {% set count = proposal_counts.get(listing.id, 0) %}
+            <span>{{ count }} proposal{% if count != 1 %}s{% endif %}</span>
+            <span>{{ listing.created_at | relative_time }}</span>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  {% endif %}
+
+  {% if pagination and pagination.total_pages > 1 %}
+    <div class="pagination-row">
+      <p class="muted text-sm">Page {{ pagination.page }} of {{ pagination.total_pages }} &middot; {{ pagination.total }} total</p>
+      <div style="display:flex; gap:0.5rem;">
+        <a class="btn btn-outline btn-sm" href="/listings/mine?page={{ pagination.page - 1 }}"
+           {% if pagination.page <= 1 %}style="pointer-events:none; opacity:0.5;"{% endif %}>&larr; Previous</a>
+        <a class="btn btn-outline btn-sm" href="/listings/mine?page={{ pagination.page + 1 }}"
+           {% if not pagination.has_more %}style="pointer-events:none; opacity:0.5;"{% endif %}>Next &rarr;</a>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
