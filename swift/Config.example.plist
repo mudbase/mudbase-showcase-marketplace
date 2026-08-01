@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- A project/collection ID is not a secret — see README "Configuration". Real IDs for this
+	     showcase's already-provisioned Mudbase project are filled in below. -->
+	<key>MudbaseProjectId</key>
+	<string>6a6d3faad07caabbbdfc56a6</string>
+	<key>MudbaseBaseURL</key>
+	<string>https://cloud.mudbase.dev</string>
+	<key>ListingsCollectionId</key>
+	<string>6a6d3fced07caabbbdfc586b</string>
+	<key>ProposalsCollectionId</key>
+	<string>6a6d3fcfd07caabbbdfc5896</string>
+	<key>MessagesCollectionId</key>
+	<string>6a6d3fd0d07caabbbdfc58c5</string>
+</dict>
+</plist>
