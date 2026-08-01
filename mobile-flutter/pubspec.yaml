@@ -1,0 +1,70 @@
+name: mudbase_showcase_marketplace
+description: >
+  Flutter reimplementation of the Mudbase Showcase Marketplace — a freelance
+  job board with client/freelancer RBAC, listings, proposals, and per-listing
+  messaging, built entirely on the Mudbase BaaS with zero custom backend.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+  flutter: '>=3.27.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.2
+
+  # HTTP client - shared with the Mudbase SDK's own MudbaseSdk().dio instance
+  dio: ^5.7.0
+
+  # Mudbase Dart SDK (generated via OpenAPI Generator, built_value pattern).
+  # Not published to pub.dev - resolved as a sibling checkout, same layout
+  # convention as the sibling mudbase-showcase-kanban/mudbase-showcase-social
+  # Flutter ports. `mobile-flutter/` is one level inside the
+  # `mudbase-showcase-marketplace` repo, so reaching a flat sibling of that
+  # repo (mudbase-sdk cloned "next to it, at the same parent level") takes
+  # exactly two `../` segments: mobile-flutter/ -> mudbase-showcase-marketplace/
+  # -> <parent> -> mudbase-sdk/dart.
+  mudbase_sdk:
+    path: ../../mudbase-sdk/dart
+
+  # Declared directly (not just pulled in transitively via mudbase_sdk)
+  # because auth_service.dart imports `package:built_value/serializer.dart`
+  # directly for `FullType` when building request bodies through the SDK's
+  # own builder classes/serializers - same version constraint the SDK itself
+  # uses, so there is no diamond-dependency conflict. Same pattern as the
+  # sibling social/ecommerce/kanban Flutter apps.
+  built_value: '>=8.4.0 <9.0.0'
+
+  # Secure token storage - Keychain (iOS) / EncryptedSharedPreferences (Android).
+  # Never SharedPreferences for the auth token (project hard security rule).
+  flutter_secure_storage: ^9.2.2
+
+  # Date/time formatting (relative timestamps on listings/proposals/messages)
+  intl: ^0.19.0
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  # Plain `package:test` (not `flutter_test`) for the pure-Dart logic layer
+  # (models, formatters, rbac, exception mapping, repositories) - this build
+  # environment has no Flutter SDK installed (confirmed before writing any
+  # code; see `plan/build-plan.md` "Testing Note"), so `flutter_test`-based
+  # tests could never actually be run here. Tests in `test/models/` and
+  # `test/core/` depend on nothing but `dart:core` and this app's own
+  # pure-Dart files, so they run with plain `dart test` right now,
+  # independent of Flutter.
+  test: ^1.24.0
+
+flutter:
+  uses-material-design: true

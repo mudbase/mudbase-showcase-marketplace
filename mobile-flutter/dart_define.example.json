@@ -1,0 +1,7 @@
+{
+  "MUDBASE_BASE_URL": "https://cloud.mudbase.dev",
+  "MUDBASE_PROJECT_ID": "6a6d3faad07caabbbdfc56a6",
+  "LISTINGS_COLLECTION_ID": "6a6d3fced07caabbbdfc586b",
+  "PROPOSALS_COLLECTION_ID": "6a6d3fcfd07caabbbdfc5896",
+  "MESSAGES_COLLECTION_ID": "6a6d3fd0d07caabbbdfc58c5"
+}
