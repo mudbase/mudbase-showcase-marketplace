@@ -1,0 +1,176 @@
+@page "/Listings/{id}"
+@model MudbaseShowcase.Marketplace.Pages.Listings.DetailModel
+@{
+    ViewData["Title"] = Model.Listing?.Title ?? "Listing";
+    string id = RouteData.Values["id"]?.ToString() ?? string.Empty;
+}
+
+@if (Model.LoadError is not null)
+{
+    <p class="text-danger small">@Model.LoadError</p>
+}
+
+@if (Model.IsNotFound)
+{
+    <div class="text-center py-5">
+        <p class="text-muted">This listing couldn&rsquo;t be found.</p>
+        <a class="btn btn-outline-secondary btn-sm" asp-page="/Index">Back to listings</a>
+    </div>
+    return;
+}
+
+@if (Model.Listing is null)
+{
+    return;
+}
+
+@if (Model.FlashError is not null)
+{
+    <p class="text-danger small" role="alert">@Model.FlashError</p>
+}
+
+<div class="mx-auto" style="max-width: 720px;">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <h1 class="h4 fw-semibold mb-1">@Model.Listing.Title</h1>
+                    <p class="small text-muted mb-0">Posted by @Model.Listing.ClientName · @DisplayHelpers.FormatRelativeTime(Model.Listing.CreatedAt)</p>
+                </div>
+                <span class="badge text-bg-light border">@ListingStatus.Label(Model.Listing.Status)</span>
+            </div>
+            <p class="listing-description small mb-3">@Model.Listing.Description</p>
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="fw-semibold text-primary">@DisplayHelpers.FormatCurrency(Model.Listing.Budget)</span>
+                @if (!string.IsNullOrWhiteSpace(Model.Listing.Category))
+                {
+                    <span class="badge text-bg-secondary">@Model.Listing.Category</span>
+                }
+            </div>
+            @if (Model.IsOwningClient)
+            {
+                <a class="btn btn-outline-secondary btn-sm" asp-page="/Listings/Edit" asp-route-id="@id">Edit listing</a>
+            }
+        </div>
+    </div>
+
+    @if (Model.IsFreelancer)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-white">Your proposal</div>
+            <div class="card-body">
+                @if (Model.OwnProposal is { } own)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">Your proposed rate: @DisplayHelpers.FormatCurrency(own.ProposedRate)</span>
+                        <span class="badge text-bg-@(own.Status == ProposalStatus.Accepted ? "success" : own.Status == ProposalStatus.Rejected ? "danger" : "secondary")">@ProposalStatus.Label(own.Status)</span>
+                    </div>
+                    <p class="small mb-0" style="white-space: pre-wrap;">@own.CoverLetter</p>
+                }
+                else
+                {
+                    <form method="post" asp-page-handler="Propose" asp-route-id="@id">
+                        <div class="mb-3">
+                            <label asp-for="ProposalForm.CoverLetter" class="form-label">Cover letter</label>
+                            <textarea asp-for="ProposalForm.CoverLetter" rows="5" class="form-control" placeholder="Explain why you're a good fit for this job…"></textarea>
+                            <span asp-validation-for="ProposalForm.CoverLetter" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ProposalForm.ProposedRate" class="form-label">Proposed rate (USD)</label>
+                            <input asp-for="ProposalForm.ProposedRate" type="number" min="1" step="1" class="form-control" />
+                            <span asp-validation-for="ProposalForm.ProposedRate" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-brand">Submit proposal</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.IsOwningClient)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-white">Proposals received</div>
+            <div class="card-body">
+                @if (Model.ReceivedProposals.Count == 0)
+                {
+                    <p class="small text-muted mb-0">No proposals yet.</p>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (ProposalDocument proposal in Model.ReceivedProposals)
+                        {
+                            <div class="border rounded p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div>
+                                        <div class="fw-semibold small">@proposal.FreelancerName</div>
+                                        <div class="small text-muted">@DisplayHelpers.FormatCurrency(proposal.ProposedRate) · @DisplayHelpers.FormatRelativeTime(proposal.CreatedAt)</div>
+                                    </div>
+                                    <span class="badge text-bg-@(proposal.Status == ProposalStatus.Accepted ? "success" : proposal.Status == ProposalStatus.Rejected ? "danger" : "secondary")">@ProposalStatus.Label(proposal.Status)</span>
+                                </div>
+                                <p class="small mb-2" style="white-space: pre-wrap;">@proposal.CoverLetter</p>
+                                @if (proposal.Status == ProposalStatus.Pending)
+                                {
+                                    <div class="d-flex gap-2">
+                                        <form method="post" asp-page-handler="Accept" asp-route-id="@id">
+                                            <input type="hidden" name="proposalId" value="@proposal.Id" />
+                                            <button type="submit" class="btn btn-sm btn-brand">Accept</button>
+                                        </form>
+                                        <form method="post" asp-page-handler="Reject" asp-route-id="@id">
+                                            <input type="hidden" name="proposalId" value="@proposal.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary">Reject</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.CanMessage)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                Messages
+                <div class="small text-muted fw-normal">Visible to the client and the accepted freelancer.</div>
+            </div>
+            <div class="card-body">
+                <div class="message-thread border rounded bg-light p-3 mb-3">
+                    @if (Model.Messages.Count == 0)
+                    {
+                        <p class="small text-muted mb-0">No messages yet — say hello.</p>
+                    }
+                    else
+                    {
+                        @foreach (MessageDocument message in Model.Messages)
+                        {
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="avatar-initials">@DisplayHelpers.Initials(message.SenderName)</span>
+                                <div class="rounded p-2 small bg-white border">
+                                    <p class="message-content mb-1">@message.Content</p>
+                                    <p class="text-muted mb-0" style="font-size: 0.7rem;">@message.SenderName · @DisplayHelpers.FormatDateTime(message.CreatedAt)</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <form method="post" asp-page-handler="SendMessage" asp-route-id="@id" class="d-flex gap-2">
+                    <textarea name="MessageDraft" rows="2" class="form-control" placeholder="Write a message…"></textarea>
+                    <button type="submit" class="btn btn-brand align-self-end">Send</button>
+                </form>
+            </div>
+        </div>
+    }
+
+    @if (Model.Listing is not null && !(Model.IsOwningClient || Model.IsFreelancer))
+    {
+        <p class="text-center small text-muted">
+            <a asp-page="/Login" asp-route-ReturnUrl="@Url.Page("/Listings/Detail", new { id })">Sign in</a>
+            to submit a proposal or message about this listing.
+        </p>
+    }
+</div>

@@ -1,0 +1,77 @@
+@page
+@model MudbaseShowcase.Marketplace.Pages.IndexModel
+@{
+    ViewData["Title"] = "Find your next project";
+}
+
+<div class="mb-4">
+    <h1 class="h3 fw-semibold">Find your next project</h1>
+    <p class="text-muted">Browse open listings posted by clients looking for freelancers.</p>
+</div>
+
+<form method="get" class="row g-3 bg-white border rounded p-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label" for="Search">Search</label>
+        <input type="text" id="Search" name="Search" value="@Model.Search" class="form-control" placeholder="Search title or description…" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="Category">Category</label>
+        <select id="Category" name="Category" class="form-select">
+            <option value="">All categories</option>
+            @foreach (string category in Model.Categories)
+            {
+                <option value="@category" selected="@(category == Model.Category)">@category</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="MinBudget">Min budget</label>
+        <input type="number" id="MinBudget" name="MinBudget" value="@Model.MinBudget" class="form-control" min="0" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="MaxBudget">Max budget</label>
+        <input type="number" id="MaxBudget" name="MaxBudget" value="@Model.MaxBudget" class="form-control" min="0" />
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-brand w-100">Go</button>
+    </div>
+</form>
+
+@if (Model.LoadError is not null)
+{
+    <p class="text-danger small">@Model.LoadError</p>
+}
+
+@if (Model.LoadError is null && Model.Listings.Count == 0)
+{
+    <p class="text-muted small">No listings match your filters.</p>
+}
+
+<div class="row g-3">
+    @foreach (ListingDocument listing in Model.Listings)
+    {
+        <div class="col-md-6 col-lg-4">
+            @await Html.PartialAsync("Shared/_ListingCard", listing)
+        </div>
+    }
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="mt-4" aria-label="Listings pagination">
+        <ul class="pagination">
+            @for (int p = 1; p <= Model.TotalPages; p++)
+            {
+                <li class="page-item @(p == Model.PageNumber ? "active" : "")">
+                    <a class="page-link"
+                       asp-page="/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Category="@Model.Category"
+                       asp-route-MinBudget="@Model.MinBudget"
+                       asp-route-MaxBudget="@Model.MaxBudget"
+                       asp-route-Page="@p">@p</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

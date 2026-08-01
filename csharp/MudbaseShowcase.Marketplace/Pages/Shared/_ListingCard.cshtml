@@ -1,0 +1,22 @@
+@using MudbaseShowcase.Marketplace.Services
+@model MudbaseShowcase.Marketplace.Models.ListingDocument
+
+<a href="/Listings/@Model.Id" class="text-decoration-none text-reset">
+    <div class="card h-100 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h2 class="h6 fw-semibold mb-0">@Model.Title</h2>
+                <span class="badge text-bg-light border">@ListingStatus.Label(Model.Status)</span>
+            </div>
+            <p class="small text-muted mb-2">Posted by @Model.ClientName · @DisplayHelpers.FormatRelativeTime(Model.CreatedAt)</p>
+            <p class="small text-truncate-3 mb-3">@Model.Description</p>
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-semibold text-primary">@DisplayHelpers.FormatCurrency(Model.Budget)</span>
+                @if (!string.IsNullOrWhiteSpace(Model.Category))
+                {
+                    <span class="badge text-bg-secondary">@Model.Category</span>
+                }
+            </div>
+        </div>
+    </div>
+</a>

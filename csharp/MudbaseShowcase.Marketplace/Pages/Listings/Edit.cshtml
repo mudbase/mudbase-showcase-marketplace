@@ -1,0 +1,72 @@
+@page "/Listings/{id}/Edit"
+@model MudbaseShowcase.Marketplace.Pages.Listings.EditModel
+@{
+    ViewData["Title"] = "Edit listing";
+    string id = RouteData.Values["id"]?.ToString() ?? string.Empty;
+}
+
+@if (Model.IsNotFound)
+{
+    <div class="text-center py-5">
+        <p class="text-muted">This listing couldn&rsquo;t be found.</p>
+    </div>
+    return;
+}
+
+@if (Model.IsForbidden)
+{
+    <div class="text-center py-5">
+        <p class="text-muted mb-3">Only the client who posted this listing can edit it.</p>
+        <a class="btn btn-outline-secondary btn-sm" asp-page="/Listings/Detail" asp-route-id="@id">Back to listing</a>
+    </div>
+    return;
+}
+
+<div class="mx-auto" style="max-width: 640px;">
+    <div class="card">
+        <div class="card-header bg-white">
+            <h1 class="h5 mb-1">Edit listing</h1>
+            <p class="small text-muted mb-0">Update the details or change its status.</p>
+        </div>
+        <div class="card-body">
+            @if (Model.SubmitError is not null)
+            {
+                <p class="text-danger small">@Model.SubmitError</p>
+            }
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="Input.Title" class="form-label">Title</label>
+                    <input asp-for="Input.Title" class="form-control" />
+                    <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.Description" class="form-label">Description</label>
+                    <textarea asp-for="Input.Description" rows="6" class="form-control"></textarea>
+                    <span asp-validation-for="Input.Description" class="text-danger small"></span>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label asp-for="Input.Budget" class="form-label">Budget (USD)</label>
+                        <input asp-for="Input.Budget" type="number" min="1" step="1" class="form-control" />
+                        <span asp-validation-for="Input.Budget" class="text-danger small"></span>
+                    </div>
+                    <div class="col-6">
+                        <label asp-for="Input.Category" class="form-label">Category (optional)</label>
+                        <input asp-for="Input.Category" class="form-control" />
+                        <span asp-validation-for="Input.Category" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.Status" class="form-label">Status</label>
+                    <select asp-for="Input.Status" class="form-select">
+                        @foreach (string status in ListingStatus.All)
+                        {
+                            <option value="@status" selected="@(status == Model.Input.Status)">@ListingStatus.Label(status)</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-brand">Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>

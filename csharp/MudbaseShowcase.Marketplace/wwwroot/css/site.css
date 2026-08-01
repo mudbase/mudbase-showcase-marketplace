@@ -1,0 +1,61 @@
+:root {
+    --brand: #2563eb;
+    --brand-dark: #1d4ed8;
+}
+
+body {
+    background-color: #f8fafc;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.btn-brand {
+    background-color: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+.btn-brand:hover,
+.btn-brand:focus {
+    background-color: var(--brand-dark);
+    border-color: var(--brand-dark);
+    color: #fff;
+}
+
+.btn-brand:disabled {
+    background-color: var(--brand);
+    border-color: var(--brand);
+    opacity: 0.5;
+}
+
+.listing-description,
+.message-content {
+    white-space: pre-wrap;
+}
+
+.message-bubble-own {
+    background-color: var(--brand);
+    color: #fff;
+}
+
+.message-thread {
+    max-height: 24rem;
+    overflow-y: auto;
+}
+
+.avatar-initials {
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--brand);
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}

@@ -1,0 +1,45 @@
+@page "/Listings/New"
+@model MudbaseShowcase.Marketplace.Pages.Listings.NewModel
+@{
+    ViewData["Title"] = "Post a new listing";
+}
+
+<div class="mx-auto" style="max-width: 640px;">
+    <div class="card">
+        <div class="card-header bg-white">
+            <h1 class="h5 mb-1">Post a new listing</h1>
+            <p class="small text-muted mb-0">Freelancers will be able to browse and submit proposals immediately.</p>
+        </div>
+        <div class="card-body">
+            @if (Model.SubmitError is not null)
+            {
+                <p class="text-danger small">@Model.SubmitError</p>
+            }
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="Input.Title" class="form-label">Title</label>
+                    <input asp-for="Input.Title" class="form-control" placeholder="e.g. Build a marketing landing page" />
+                    <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.Description" class="form-label">Description</label>
+                    <textarea asp-for="Input.Description" rows="6" class="form-control" placeholder="Describe the scope, deliverables, and timeline…"></textarea>
+                    <span asp-validation-for="Input.Description" class="text-danger small"></span>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label asp-for="Input.Budget" class="form-label">Budget (USD)</label>
+                        <input asp-for="Input.Budget" type="number" min="1" step="1" class="form-control" />
+                        <span asp-validation-for="Input.Budget" class="text-danger small"></span>
+                    </div>
+                    <div class="col-6">
+                        <label asp-for="Input.Category" class="form-label">Category (optional)</label>
+                        <input asp-for="Input.Category" class="form-control" placeholder="e.g. Web Development" />
+                        <span asp-validation-for="Input.Category" class="text-danger small"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-brand">Post listing</button>
+            </form>
+        </div>
+    </div>
+</div>
