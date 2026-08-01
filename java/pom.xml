@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.5</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>dev.mudbase.showcase</groupId>
+  <artifactId>marketplace-java</artifactId>
+  <version>1.0.0</version>
+  <name>mudbase-showcase-marketplace-java</name>
+  <description>
+    A freelance marketplace reference app built entirely on Mudbase (cloud.mudbase.dev),
+    reimplemented in Spring Boot + Thymeleaf. Companion to the Next.js version at ../web - same
+    Mudbase project, same three collections (listings/proposals/messages), same RBAC matrix and
+    business rules; see ../web/plan/build-plan.md for the reference data model and what
+    deliberately differs here (server-rendered forms instead of client-side polling/live search).
+  </description>
+
+  <properties>
+    <java.version>17</java.version>
+    <mudbase-sdk.version>2.0.0</mudbase-sdk.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+    <!--
+      The real Mudbase Java SDK. NOT on Maven Central - already installed into ~/.m2 as
+      dev.mudbase:mudbase-sdk:2.0.0 by the sibling kanban/ecommerce/social showcase builds on
+      this machine, so no extra sibling-clone-and-install step is needed here.
+    -->
+    <dependency>
+      <groupId>dev.mudbase</groupId>
+      <artifactId>mudbase-sdk</artifactId>
+      <version>${mudbase-sdk.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

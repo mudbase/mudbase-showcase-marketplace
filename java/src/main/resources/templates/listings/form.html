@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${formMode == 'edit'} ? 'Edit listing — Marketplace' : 'Post a listing — Marketplace'">Listing — Marketplace</title>
+  <th:block th:replace="~{fragments/layout :: head-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container" style="max-width:640px">
+  <a class="back-link" th:href="${formMode == 'edit'} ? @{'/listings/' + ${listingId}} : @{/}">&larr; Back</a>
+  <h1 class="page-title" th:text="${formMode == 'edit'} ? 'Edit listing' : 'Post a new listing'">Listing</h1>
+  <p class="lede" th:text="${formMode == 'edit'} ? 'Update the details or change its status.' : 'Freelancers will be able to browse and submit proposals immediately.'">Lede</p>
+
+  <form method="post"
+        th:action="${formMode == 'edit'} ? @{'/listings/' + ${listingId} + '/edit'} : @{/listings}"
+        th:object="${listingForm}" novalidate>
+    <div class="field">
+      <label for="listing-title">Title</label>
+      <input id="listing-title" type="text" th:field="*{title}" placeholder="e.g. Build a marketing landing page" />
+      <p class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</p>
+    </div>
+    <div class="field">
+      <label for="listing-description">Description</label>
+      <textarea id="listing-description" rows="6" th:field="*{description}" placeholder="Describe the scope, deliverables, and timeline…"></textarea>
+      <p class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</p>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="listing-budget">Budget (USD)</label>
+        <input id="listing-budget" type="number" min="1" step="1" th:field="*{budget}" />
+        <p class="error" th:if="${#fields.hasErrors('budget')}" th:errors="*{budget}">Error</p>
+      </div>
+      <div class="field">
+        <label for="listing-category">Category (optional)</label>
+        <input id="listing-category" type="text" th:field="*{category}" placeholder="e.g. Web Development" />
+        <p class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Error</p>
+      </div>
+    </div>
+    <div class="field" th:if="${formMode == 'edit'}">
+      <label for="listing-status">Status</label>
+      <select id="listing-status" th:field="*{status}">
+        <option value="open">Open</option>
+        <option value="in_progress">In progress</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-accent" th:text="${formMode == 'edit'} ? 'Save changes' : 'Post listing'">Save</button>
+  </form>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

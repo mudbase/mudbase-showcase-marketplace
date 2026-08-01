@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:fragment="head-assets">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </th:block>
+</head>
+<body>
+  <header class="site-header" th:fragment="header">
+    <div class="container">
+      <a class="brand" th:href="@{/}">Marketplace</a>
+      <nav class="nav" th:if="${isSignedIn}">
+        <a class="nav-link" th:href="@{/}">Browse</a>
+        <a class="nav-link" th:if="${isClient}" th:href="@{/listings/mine}">My listings</a>
+        <a class="nav-link" th:if="${isFreelancer}" th:href="@{/proposals/mine}">My proposals</a>
+        <a class="nav-link" th:if="${isClient}" th:href="@{/listings/new}">Post a listing</a>
+        <span class="role-badge" th:classappend="'role-badge-' + ${currentRole}" th:text="${roleLabel}">Role</span>
+        <form method="post" th:action="@{/logout}" style="display:inline">
+          <button type="submit" class="btn btn-outline btn-sm">Sign out</button>
+        </form>
+      </nav>
+    </div>
+  </header>
+
+  <footer class="site-footer" th:fragment="footer">
+    <div class="container">
+      <p>A freelance marketplace — a reference app served entirely by <a href="https://www.mudbase.dev">Mudbase</a>. Java/Spring Boot edition.</p>
+    </div>
+  </footer>
+</body>
+</html>

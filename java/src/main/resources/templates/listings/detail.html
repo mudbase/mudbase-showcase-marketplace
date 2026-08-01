@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${listing.title} + ' — Marketplace'">Listing — Marketplace</title>
+  <th:block th:replace="~{fragments/layout :: head-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container" style="max-width:760px">
+  <a class="back-link" th:href="@{/}">&larr; Back to listings</a>
+
+  <p th:if="${formError}" class="alert alert-error" th:text="${formError}">Error</p>
+
+  <section class="detail-card">
+    <div class="detail-card-header">
+      <div>
+        <h1 class="page-title" th:text="${listing.title}">Title</h1>
+        <p class="muted">
+          Posted by <span th:text="${listing.clientName}">Client</span> ·
+          <span th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatRelativeTime(listing.createdAt)}">time</span>
+        </p>
+      </div>
+      <span class="badge" th:classappend="'badge-status-' + ${listing.status}" th:text="${listing.statusLabel}">Status</span>
+    </div>
+    <p class="detail-description" th:text="${listing.description}">Description</p>
+    <div class="detail-meta">
+      <span class="listing-budget" th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatCurrency(listing.budget)}">$0</span>
+      <span class="badge badge-secondary" th:if="${listing.hasCategory}" th:text="${listing.category}">Category</span>
+    </div>
+    <div class="detail-actions" th:if="${isOwningClient}">
+      <a class="btn btn-outline btn-sm" th:href="@{'/listings/' + ${listing.id} + '/edit'}">Edit listing</a>
+      <form method="post" th:action="@{'/listings/' + ${listing.id} + '/delete'}" onsubmit="return confirm('Delete this listing? This cannot be undone.');" style="display:inline">
+        <button type="submit" class="btn btn-danger btn-sm">Delete listing</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="detail-card" th:if="${isFreelancer}">
+    <h2 class="section-title">Your proposal</h2>
+    <div th:if="${ownProposal != null}" class="own-proposal">
+      <div class="detail-card-header">
+        <span class="muted">Your proposed rate: <strong th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatCurrency(ownProposal.proposedRate)}">$0</strong></span>
+        <span class="badge" th:classappend="'badge-proposal-' + ${ownProposal.status}" th:text="${ownProposal.statusLabel}">Status</span>
+      </div>
+      <p th:text="${ownProposal.coverLetter}">Cover letter</p>
+      <form th:if="${ownProposal.pending}" method="post" th:action="@{'/proposals/' + ${ownProposal.id} + '/withdraw'}"
+            onsubmit="return confirm('Withdraw your proposal for this listing?');">
+        <button type="submit" class="btn btn-outline btn-sm">Withdraw proposal</button>
+      </form>
+    </div>
+    <form th:if="${ownProposal == null}" method="post" th:action="@{'/listings/' + ${listing.id} + '/proposals'}" th:object="${proposalForm}" novalidate>
+      <div class="field">
+        <label for="proposal-cover-letter">Cover letter</label>
+        <textarea id="proposal-cover-letter" rows="5" th:field="*{coverLetter}" placeholder="Explain why you're a good fit for this job…"></textarea>
+        <p class="error" th:if="${#fields.hasErrors('coverLetter')}" th:errors="*{coverLetter}">Error</p>
+      </div>
+      <div class="field">
+        <label for="proposal-rate">Proposed rate (USD)</label>
+        <input id="proposal-rate" type="number" min="1" step="1" th:field="*{proposedRate}" />
+        <p class="error" th:if="${#fields.hasErrors('proposedRate')}" th:errors="*{proposedRate}">Error</p>
+      </div>
+      <button type="submit" class="btn btn-accent">Submit proposal</button>
+    </form>
+  </section>
+
+  <section class="detail-card" th:if="${isOwningClient}">
+    <h2 class="section-title">Proposals received</h2>
+    <p th:if="${proposals.isEmpty()}" class="muted">No proposals yet.</p>
+    <div class="proposal-list" th:unless="${proposals.isEmpty()}">
+      <div class="proposal-item" th:each="proposal : ${proposals}">
+        <div class="detail-card-header">
+          <div>
+            <p class="proposal-freelancer" th:text="${proposal.freelancerName}">Freelancer</p>
+            <p class="muted">
+              <span th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatCurrency(proposal.proposedRate)}">$0</span> ·
+              <span th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatRelativeTime(proposal.createdAt)}">time</span>
+            </p>
+          </div>
+          <span class="badge" th:classappend="'badge-proposal-' + ${proposal.status}" th:text="${proposal.statusLabel}">Status</span>
+        </div>
+        <p th:text="${proposal.coverLetter}">Cover letter</p>
+        <div class="proposal-actions" th:if="${proposal.pending}">
+          <form method="post" th:action="@{'/proposals/' + ${proposal.id} + '/accept'}" style="display:inline">
+            <button type="submit" class="btn btn-accent btn-sm">Accept</button>
+          </form>
+          <form method="post" th:action="@{'/proposals/' + ${proposal.id} + '/reject'}" style="display:inline">
+            <button type="submit" class="btn btn-outline btn-sm">Reject</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-card" th:if="${canMessage}">
+    <h2 class="section-title">Messages</h2>
+    <p class="muted" style="margin-top:-8px">Visible to the client and the accepted freelancer.</p>
+    <div class="message-thread">
+      <p th:if="${messages.isEmpty()}" class="muted">No messages yet — say hello.</p>
+      <div class="message-bubble" th:each="message : ${messages}" th:classappend="${message.senderId == currentUser.userId} ? 'message-own' : ''">
+        <div class="message-avatar" th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).initials(message.senderName)}">??</div>
+        <div class="message-content">
+          <p th:text="${message.content}">Content</p>
+          <p class="message-meta" th:text="${message.senderName} + ' · ' + ${T(dev.mudbase.showcase.marketplace.support.Formatting).formatDateTime(message.createdAt)}">meta</p>
+        </div>
+      </div>
+    </div>
+    <form method="post" th:action="@{'/listings/' + ${listing.id} + '/messages'}" th:object="${messageForm}" class="message-form" novalidate>
+      <textarea rows="2" th:field="*{content}" placeholder="Write a message…"></textarea>
+      <button type="submit" class="btn btn-accent btn-sm">Send</button>
+      <p class="error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Error</p>
+    </form>
+  </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

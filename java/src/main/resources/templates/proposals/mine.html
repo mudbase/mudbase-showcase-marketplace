@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My proposals — Marketplace</title>
+  <th:block th:replace="~{fragments/layout :: head-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container">
+  <div class="page-heading">
+    <h1 class="page-title">My proposals</h1>
+    <p class="lede">Every proposal you&apos;ve submitted, across all listings.</p>
+  </div>
+
+  <p th:if="${proposals.items.isEmpty()}" class="empty-state">
+    You haven&apos;t submitted any proposals yet. <a th:href="@{/}">Browse listings</a>.
+  </p>
+
+  <div class="row-list" th:unless="${proposals.items.isEmpty()}">
+    <a class="row-card" th:each="proposal : ${proposals.items}" th:href="@{'/listings/' + ${proposal.listingId}}">
+      <div class="detail-card-header">
+        <span class="row-card-title" th:text="${listingTitles.get(proposal.listingId)} ?: 'Listing'">Listing</span>
+        <span class="badge" th:classappend="'badge-proposal-' + ${proposal.status}" th:text="${proposal.statusLabel}">Status</span>
+      </div>
+      <div class="row-card-footer muted">
+        <span th:text="'Your rate: ' + ${T(dev.mudbase.showcase.marketplace.support.Formatting).formatCurrency(proposal.proposedRate)}">Rate</span>
+        <span th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatRelativeTime(proposal.createdAt)}">time</span>
+      </div>
+    </a>
+  </div>
+
+  <nav class="pagination" th:if="${proposals.totalPages > 1}">
+    <a th:if="${proposals.page > 1}" class="btn btn-outline btn-sm" th:href="@{/proposals/mine(page=${proposals.page - 1})}">Previous</a>
+    <span th:unless="${proposals.page > 1}" class="btn btn-outline btn-sm btn-disabled">Previous</span>
+    <span class="pagination-status" th:text="'Page ' + ${proposals.page} + ' of ' + ${proposals.totalPages}">Page</span>
+    <a th:if="${proposals.hasMore}" class="btn btn-outline btn-sm" th:href="@{/proposals/mine(page=${proposals.page + 1})}">Next</a>
+    <span th:unless="${proposals.hasMore}" class="btn btn-outline btn-sm btn-disabled">Next</span>
+  </nav>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Browse listings — Marketplace</title>
+  <th:block th:replace="~{fragments/layout :: head-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container">
+  <div class="page-heading">
+    <h1 class="page-title">Find your next project</h1>
+    <p class="lede">Browse open listings posted by clients looking for freelancers.</p>
+  </div>
+
+  <form method="get" th:action="@{/}" class="filter-bar">
+    <input type="search" name="q" placeholder="Search title or description…" th:value="${q}" />
+    <select name="category">
+      <option value="">All categories</option>
+      <option th:each="c : ${categories}" th:value="${c}" th:text="${c}" th:selected="${c == category}">Category</option>
+    </select>
+    <input type="number" name="minBudget" placeholder="Min budget" min="0" th:value="${minBudget}" />
+    <input type="number" name="maxBudget" placeholder="Max budget" min="0" th:value="${maxBudget}" />
+    <button type="submit" class="btn btn-accent btn-sm">Search</button>
+    <a th:href="@{/}" class="btn btn-outline btn-sm">Clear</a>
+  </form>
+
+  <p th:if="${listings.items.isEmpty()}" class="empty-state">No listings match your filters.</p>
+
+  <div class="listing-grid" th:unless="${listings.items.isEmpty()}">
+    <a class="listing-card" th:each="listing : ${listings.items}" th:href="@{'/listings/' + ${listing.id}}">
+      <div class="listing-card-header">
+        <h2 class="listing-card-title" th:text="${listing.title}">Title</h2>
+        <span class="badge" th:classappend="'badge-status-' + ${listing.status}" th:text="${listing.statusLabel}">Status</span>
+      </div>
+      <p class="listing-card-description" th:text="${listing.description}">Description</p>
+      <div class="listing-card-footer">
+        <span class="listing-budget" th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatCurrency(listing.budget)}">$0</span>
+        <span class="badge badge-secondary" th:if="${listing.hasCategory}" th:text="${listing.category}">Category</span>
+        <span class="muted" th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).formatRelativeTime(listing.createdAt)}">time</span>
+      </div>
+      <p class="listing-card-client muted">Posted by <span th:text="${listing.clientName}">Client</span></p>
+    </a>
+  </div>
+
+  <nav class="pagination" th:if="${listings.totalPages > 1}">
+    <a th:if="${listings.page > 1}" class="btn btn-outline btn-sm"
+       th:href="@{/(q=${q},category=${category},minBudget=${minBudget},maxBudget=${maxBudget},page=${listings.page - 1})}">Previous</a>
+    <span th:unless="${listings.page > 1}" class="btn btn-outline btn-sm btn-disabled">Previous</span>
+    <span class="pagination-status" th:text="'Page ' + ${listings.page} + ' of ' + ${listings.totalPages}">Page</span>
+    <a th:if="${listings.hasMore}" class="btn btn-outline btn-sm"
+       th:href="@{/(q=${q},category=${category},minBudget=${minBudget},maxBudget=${maxBudget},page=${listings.page + 1})}">Next</a>
+    <span th:unless="${listings.hasMore}" class="btn btn-outline btn-sm btn-disabled">Next</span>
+  </nav>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
