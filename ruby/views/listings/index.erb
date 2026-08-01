@@ -1,0 +1,69 @@
+<h1 class="page-title">Find your next project</h1>
+<p class="page-subtitle">Browse open listings posted by clients looking for freelancers.</p>
+
+<form action="/" method="get" class="filter-bar">
+  <div class="field">
+    <label for="q">Search</label>
+    <input type="text" id="q" name="q" placeholder="Search title or description…" value="<%= h(@search) %>">
+  </div>
+  <div class="field">
+    <label for="category">Category</label>
+    <select id="category" name="category">
+      <option value="">All categories</option>
+      <% @categories.each do |category| %>
+        <option value="<%= h(category) %>" <%= "selected" if @category == category %>><%= h(category) %></option>
+      <% end %>
+    </select>
+  </div>
+  <div class="field">
+    <label for="min_budget">Min budget</label>
+    <input type="text" inputmode="numeric" id="min_budget" name="min_budget" value="<%= h(@min_budget) %>">
+  </div>
+  <div class="field">
+    <label for="max_budget">Max budget</label>
+    <input type="text" inputmode="numeric" id="max_budget" name="max_budget" value="<%= h(@max_budget) %>">
+  </div>
+  <button type="submit" class="btn">Apply filters</button>
+  <% if !@search.empty? || !@category.empty? || !@min_budget.empty? || !@max_budget.empty? %>
+    <a href="/" class="btn btn-outline">Clear</a>
+  <% end %>
+</form>
+
+<% if @listings.empty? %>
+  <div class="empty-state">
+    <p>No listings match your filters.</p>
+  </div>
+<% else %>
+  <div class="listing-grid">
+    <% @listings.each do |listing| %>
+      <a href="/listings/<%= h(listing[:_id]) %>" class="listing-card">
+        <div class="listing-card-header">
+          <h2 class="listing-card-title"><%= h(listing[:title]) %></h2>
+          <span class="status-badge status-badge-<%= h(listing[:status]) %>"><%= listing_status_label(listing[:status]) %></span>
+        </div>
+        <p class="listing-card-desc"><%= h(listing[:description].to_s[0, 160]) %><%= "…" if listing[:description].to_s.length > 160 %></p>
+        <div class="listing-card-meta">
+          <span class="listing-budget"><%= format_currency(listing[:budget]) %></span>
+          <% if listing[:category] %>
+            <span class="tag"><%= h(listing[:category]) %></span>
+          <% end %>
+          <span class="listing-client">Posted by <%= h(listing[:clientName]) %></span>
+        </div>
+      </a>
+    <% end %>
+  </div>
+<% end %>
+
+<% pagination = @pagination || {} %>
+<% total_pages = pagination[:totalPages] || 1 %>
+<% if total_pages > 1 %>
+  <nav class="pagination">
+    <% if @page > 1 %>
+      <a class="btn btn-sm btn-outline" href="/?<%= build_query(page: @page - 1) %>">&larr; Previous</a>
+    <% end %>
+    <span class="pagination-status">Page <%= @page %> of <%= total_pages %></span>
+    <% if @page < total_pages %>
+      <a class="btn btn-sm btn-outline" href="/?<%= build_query(page: @page + 1) %>">Next &rarr;</a>
+    <% end %>
+  </nav>
+<% end %>

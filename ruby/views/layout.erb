@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mudbase Marketplace</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">Mudbase Marketplace</a>
+      <nav class="nav">
+        <% if client? %>
+          <a href="/listings/mine">My listings</a>
+          <a href="/listings/new" class="btn btn-sm">Post a listing</a>
+        <% elsif freelancer? %>
+          <a href="/proposals">My proposals</a>
+        <% end %>
+
+        <% if logged_in? %>
+          <span class="role-badge role-badge-<%= h(current_role) %>"><%= h(@current_user[:firstName]) %> · <%= h(current_role) %></span>
+          <form action="/logout" method="post" class="inline-form">
+            <button type="submit" class="link-button">Sign out</button>
+          </form>
+        <% else %>
+          <a href="/login">Sign in</a>
+          <a href="/register" class="btn btn-sm btn-outline">Sign up</a>
+        <% end %>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <% if @flash_notice %>
+      <p class="flash flash-notice" role="status"><%= h(@flash_notice) %></p>
+    <% end %>
+    <% if @flash_error %>
+      <p class="flash flash-error" role="alert"><%= h(@flash_error) %></p>
+    <% end %>
+
+    <%= yield %>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Mudbase Marketplace runs entirely on <a href="https://www.mudbase.dev" target="_blank" rel="noopener noreferrer">Mudbase</a> - auth and database, no custom backend.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<% if messages.empty? %>
+  <p class="empty-inline">No messages yet — say hello.</p>
+<% else %>
+  <div class="message-thread">
+    <% messages.each do |message| %>
+      <% is_own = message[:senderId] == current_user[:id] %>
+      <div class="message-row <%= "message-row-own" if is_own %>">
+        <div class="message-avatar"><%= initials(message[:senderName]) %></div>
+        <div class="message-bubble <%= "message-bubble-own" if is_own %>">
+          <p class="message-content"><%= h(message[:content]) %></p>
+          <p class="message-meta"><%= h(message[:senderName]) %> · <%= format_datetime(message[:createdAt]) %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<form action="/listings/<%= h(listing[:_id]) %>/messages" method="post" class="message-composer">
+  <textarea name="content" rows="2" maxlength="2000" placeholder="Write a message…" required></textarea>
+  <button type="submit" class="btn">Send</button>
+</form>

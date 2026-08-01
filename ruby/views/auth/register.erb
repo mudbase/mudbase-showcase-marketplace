@@ -1,0 +1,48 @@
+<div style="max-width:28rem; margin:0 auto;">
+  <h1 class="page-title" style="text-align:center;">Create your account</h1>
+  <p class="page-subtitle" style="text-align:center;">Choose whether you're hiring or looking for work.</p>
+
+  <form action="/register" method="post" class="stack" novalidate>
+    <div class="field">
+      <label>I want to&hellip;</label>
+      <div class="role-picker">
+        <label class="role-option <%= "role-option-selected" if @role == "client" %>">
+          <input type="radio" name="role" value="client" <%= "checked" if @role == "client" %>>
+          Hire freelancers
+        </label>
+        <label class="role-option <%= "role-option-selected" if @role == "freelancer" %>">
+          <input type="radio" name="role" value="freelancer" <%= "checked" if @role == "freelancer" %>>
+          Find work
+        </label>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="first_name">First name</label>
+        <input type="text" id="first_name" name="first_name" autocomplete="given-name" value="<%= h(@first_name) %>" required>
+      </div>
+      <div class="field">
+        <label for="last_name">Last name</label>
+        <input type="text" id="last_name" name="last_name" autocomplete="family-name" value="<%= h(@last_name) %>" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="email" value="<%= h(@email) %>" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" required>
+      <p class="field-hint">At least 8 characters.</p>
+    </div>
+    <label class="checkbox-row">
+      <input type="checkbox" name="agreed_to_terms" value="1">
+      <span>I agree to the Terms of Service and Privacy Policy.</span>
+    </label>
+    <button type="submit" class="btn btn-block">Create account</button>
+  </form>
+
+  <p style="text-align:center; margin-top:1.5rem; color:var(--muted); font-size:0.9rem;">
+    Already have an account? <a href="/login">Sign in</a>
+  </p>
+</div>

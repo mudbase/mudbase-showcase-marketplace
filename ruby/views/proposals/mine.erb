@@ -1,0 +1,38 @@
+<h1 class="page-title">My proposals</h1>
+<p class="page-subtitle">Every proposal you've submitted, across all listings.</p>
+
+<% if @proposals.empty? %>
+  <div class="empty-state">
+    <p>You haven't submitted any proposals yet. <a href="/">Browse listings</a>.</p>
+  </div>
+<% else %>
+  <div class="stack">
+    <% @proposals.each do |proposal| %>
+      <% listing = @listings_by_id[proposal[:listingId]] %>
+      <a href="/listings/<%= h(proposal[:listingId]) %>" class="row-card">
+        <div class="row-card-header">
+          <strong><%= h(listing ? listing[:title] : "Listing") %></strong>
+          <span class="<%= proposal_status_class(proposal[:status]) %>"><%= proposal_status_label(proposal[:status]) %></span>
+        </div>
+        <div class="row-card-meta">
+          <span>Your rate: <%= format_currency(proposal[:proposedRate]) %></span>
+          <span><%= format_relative(proposal[:createdAt]) %></span>
+        </div>
+      </a>
+    <% end %>
+  </div>
+<% end %>
+
+<% pagination = @pagination || {} %>
+<% total_pages = pagination[:totalPages] || 1 %>
+<% if total_pages > 1 %>
+  <nav class="pagination">
+    <% if @page > 1 %>
+      <a class="btn btn-sm btn-outline" href="/proposals?page=<%= @page - 1 %>">&larr; Previous</a>
+    <% end %>
+    <span class="pagination-status">Page <%= @page %> of <%= total_pages %></span>
+    <% if @page < total_pages %>
+      <a class="btn btn-sm btn-outline" href="/proposals?page=<%= @page + 1 %>">Next &rarr;</a>
+    <% end %>
+  </nav>
+<% end %>

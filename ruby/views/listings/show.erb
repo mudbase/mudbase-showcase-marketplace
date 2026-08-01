@@ -1,0 +1,100 @@
+<div style="max-width:44rem;">
+  <div class="detail-card">
+    <div class="detail-header">
+      <div>
+        <h1 class="page-title" style="margin-bottom:0.15rem;"><%= h(@listing[:title]) %></h1>
+        <p class="page-subtitle" style="margin-bottom:0;">Posted by <%= h(@listing[:clientName]) %> · <%= format_relative(@listing[:createdAt]) %></p>
+      </div>
+      <span class="status-badge status-badge-<%= h(@listing[:status]) %>"><%= listing_status_label(@listing[:status]) %></span>
+    </div>
+
+    <p class="detail-description"><%= h(@listing[:description]) %></p>
+
+    <div class="detail-meta">
+      <span class="listing-budget"><%= format_currency(@listing[:budget]) %></span>
+      <% if @listing[:category] %>
+        <span class="tag"><%= h(@listing[:category]) %></span>
+      <% end %>
+    </div>
+
+    <% if @is_owning_client %>
+      <a href="/listings/<%= h(@listing[:_id]) %>/edit" class="btn btn-outline btn-sm">Edit listing</a>
+    <% end %>
+  </div>
+
+  <% if @is_freelancer %>
+    <div class="detail-card">
+      <h2 class="section-title">Your proposal</h2>
+      <% if @own_proposal %>
+        <div class="proposal-card">
+          <div class="proposal-card-header">
+            <span>Your proposed rate: <%= format_currency(@own_proposal[:proposedRate]) %></span>
+            <span class="<%= proposal_status_class(@own_proposal[:status]) %>"><%= proposal_status_label(@own_proposal[:status]) %></span>
+          </div>
+          <p class="proposal-cover-letter"><%= h(@own_proposal[:coverLetter]) %></p>
+        </div>
+      <% else %>
+        <form action="/listings/<%= h(@listing[:_id]) %>/proposals" method="post" class="stack" novalidate>
+          <div class="field">
+            <label for="cover_letter">Cover letter</label>
+            <textarea id="cover_letter" name="cover_letter" rows="5" maxlength="4000" placeholder="Explain why you're a good fit for this job…" required></textarea>
+            <span class="field-hint">At least 20 characters.</span>
+          </div>
+          <div class="field">
+            <label for="proposed_rate">Proposed rate (USD)</label>
+            <input type="number" id="proposed_rate" name="proposed_rate" min="1" step="1" required>
+          </div>
+          <button type="submit" class="btn">Submit proposal</button>
+        </form>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @is_owning_client %>
+    <div class="detail-card">
+      <h2 class="section-title">Proposals received</h2>
+      <% if @proposals.empty? %>
+        <p class="empty-inline">No proposals yet.</p>
+      <% else %>
+        <div class="stack">
+          <% @proposals.each do |proposal| %>
+            <div class="proposal-card">
+              <div class="proposal-card-header">
+                <div>
+                  <strong><%= h(proposal[:freelancerName]) %></strong>
+                  <span class="proposal-meta"><%= format_currency(proposal[:proposedRate]) %> · <%= format_relative(proposal[:createdAt]) %></span>
+                </div>
+                <span class="<%= proposal_status_class(proposal[:status]) %>"><%= proposal_status_label(proposal[:status]) %></span>
+              </div>
+              <p class="proposal-cover-letter"><%= h(proposal[:coverLetter]) %></p>
+              <% if proposal[:status] == "pending" %>
+                <div style="display:flex; gap:0.5rem;">
+                  <form action="/proposals/<%= h(proposal[:_id]) %>/accept" method="post">
+                    <button type="submit" class="btn btn-sm">Accept</button>
+                  </form>
+                  <form action="/proposals/<%= h(proposal[:_id]) %>/reject" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline">Reject</button>
+                  </form>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @can_message %>
+    <div class="detail-card">
+      <h2 class="section-title">Messages</h2>
+      <p class="page-subtitle" style="margin-bottom:1rem;">Visible to the client and the accepted freelancer.</p>
+      <%= erb :"messages/_thread", layout: false, locals: { listing: @listing, messages: @messages, current_user: @current_user } %>
+    </div>
+  <% end %>
+
+  <% unless logged_in? %>
+    <p style="text-align:center; color:var(--muted); font-size:0.9rem;">
+      <a href="/login">Sign in</a> to submit a proposal or message about this listing.
+    </p>
+  <% end %>
+</div>
