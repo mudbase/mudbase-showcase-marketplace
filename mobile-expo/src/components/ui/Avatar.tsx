@@ -10,7 +10,7 @@ export interface AvatarProps {
   className?: string;
 }
 
-/** Initials-only avatar — there is no `users` collection and no profile photo anywhere in this
+/** Initials-only avatar - there is no `users` collection and no profile photo anywhere in this
  * app's data model (see plan/build-plan.md), so a name is all there ever is to render. */
 export function Avatar({ name, size = "md", className }: AvatarProps): React.JSX.Element {
   const dimension = SIZES[size];

@@ -12,7 +12,7 @@ export interface QueryParams {
 }
 
 /**
- * Generic, zod-typed collection query/mutation hooks — the RN equivalent of
+ * Generic, zod-typed collection query/mutation hooks - the RN equivalent of
  * web/src/hooks/useCollection.ts, adapted to this app's schema-per-call-site `MudbaseClient`
  * (see src/api/client.ts) instead of the web client's untyped `Document` shape. One generic
  * wrapper per collection, rather than one bespoke hook file per domain, mirrors the web
@@ -34,7 +34,7 @@ export function useDocuments<T>(
     ...queryOptions,
   });
   // While the boot-time session bootstrap (real session restore or anonymous fallback) is still
-  // running, isFetching is false because the query is disabled — folding isInitializing in here
+  // running, isFetching is false because the query is disabled - folding isInitializing in here
   // avoids a flash of "nothing here" before the very first real fetch ever runs.
   return { ...result, isLoading: result.isLoading || (isInitializing && !result.data) };
 }
@@ -56,7 +56,7 @@ export function useDocument<T>(
   });
 }
 
-/** Server-side keyword search — see MudbaseClient.search() for why this exists instead of a
+/** Server-side keyword search - see MudbaseClient.search() for why this exists instead of a
  * `$regex` filter. `collectionSlug` is the collection's slug (not its collection `_id`). */
 export function useSearch<T>(
   schema: z.ZodType<T>,

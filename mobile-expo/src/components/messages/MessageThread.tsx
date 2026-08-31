@@ -8,7 +8,7 @@ import { MESSAGES_COLLECTION_ID } from "@/config/env";
 import { cn } from "@/lib/cn";
 import { formatDateTime, initials, isObjectId } from "@/lib/format";
 
-/** No Socket.IO / realtime channel in this app (see plan/build-plan.md) — the thread refreshes
+/** No Socket.IO / realtime channel in this app (see plan/build-plan.md) - the thread refreshes
  * via TanStack Query polling, identical in spirit to web/src/components/messages/MessageThread.tsx's
  * `refetchInterval`. */
 const POLL_INTERVAL_MS = 4000;
@@ -45,7 +45,7 @@ export function MessageThread({ listingId, currentUserId, currentUserName }: Mes
         {isLoading && <Text className="p-4 text-sm text-muted-foreground">Loading messages…</Text>}
         {isError && <Text className="p-4 text-sm text-destructive">Couldn&apos;t load messages.</Text>}
         {!isLoading && !isError && messages.length === 0 && (
-          <Text className="p-4 text-sm text-muted-foreground">No messages yet — say hello.</Text>
+          <Text className="p-4 text-sm text-muted-foreground">No messages yet - say hello.</Text>
         )}
         {!isLoading && !isError && messages.length > 0 && (
           <FlatList

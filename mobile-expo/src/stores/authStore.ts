@@ -21,16 +21,16 @@ function messageFrom(err: unknown, fallback: string): string {
 }
 
 /**
- * A plain in-memory zustand store, not persisted via MMKV/AsyncStorage — the only durable state
+ * A plain in-memory zustand store, not persisted via MMKV/AsyncStorage - the only durable state
  * is the token pair in SecureStore (mudbaseClient owns that).
  *
  * Unlike the sibling `mudbase-showcase-kanban` port, this app DOES fall back to an anonymous
- * guest session — this project's `listings` collection grants public read to any authenticated
+ * guest session - this project's `listings` collection grants public read to any authenticated
  * session, anonymous included (see plan/build-plan.md "Auth flow"), mirroring
  * web/src/lib/mudbase-provider.tsx's own bootstrap: restore a real session if one exists,
  * otherwise establish a fresh anonymous one so the public listings feed still works without
  * forcing signup. `logout()` re-establishes a fresh anonymous session immediately afterward for
- * the same reason — this app's mobile UX shouldn't require an app restart just to keep browsing
+ * the same reason - this app's mobile UX shouldn't require an app restart just to keep browsing
  * as a guest after signing out.
  */
 export const useAuthStore = create<AuthState>((set) => ({

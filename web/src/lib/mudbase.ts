@@ -13,7 +13,7 @@ export interface RegisterParams {
   firstName: string
   lastName: string
   role: AppRole
-  /** Required by Mudbase's registration validator — a direct API call without it is rejected. */
+  /** Required by Mudbase's registration validator - a direct API call without it is rejected. */
   agreedToTerms: boolean
 }
 
@@ -335,7 +335,7 @@ export class MudbaseClient {
 
   /**
    * Server-side keyword search across a collection's string fields (title/description/name/
-   * content/email). This is the real search surface — the collection-data `filter` param
+   * content/email). This is the real search surface - the collection-data `filter` param
    * cannot do substring search: `$regex` (and `$text`'s `$search`) are on the deployed query
    * sanitizer's dangerous-operator blocklist and always 400, verified live against this
    * project on 2026-08-01. This endpoint builds its own regex server-side (not from raw

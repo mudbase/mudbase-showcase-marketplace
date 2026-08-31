@@ -1,6 +1,6 @@
-# Build Plan — Mudbase Showcase: Marketplace (web)
+# Build Plan - Mudbase Showcase: Marketplace (web)
 
-This is the **reference implementation** for the marketplace showcase — the other 9 ports
+This is the **reference implementation** for the marketplace showcase - the other 9 ports
 (mobile-expo, mobile-flutter, python, go, ruby, java, csharp, php, swift) are built to match this
 data model and API contract exactly.
 
@@ -10,20 +10,20 @@ data model and API contract exactly.
 - Tailwind CSS + shadcn/ui-style components (Radix primitives + `class-variance-authority` + `tailwind-merge`)
 - TanStack Query v5 for all server state (listings, proposals, messages)
 - `react-hook-form` + `zod` for every form
-- Zero custom backend — every read/write goes straight to `cloud.mudbase.dev` from the browser
+- Zero custom backend - every read/write goes straight to `cloud.mudbase.dev` from the browser
 
 No Socket.IO / realtime channel is used in this version (unlike the social/ecommerce showcases).
 The messages thread and proposal-status updates refresh via TanStack Query polling
-(`refetchInterval`) and cache invalidation on mutation — sufficient for the demo's scale and
+(`refetchInterval`) and cache invalidation on mutation - sufficient for the demo's scale and
 keeps this reference implementation simpler for the other 9 ports to mirror without needing a
 WebSocket client per language.
 
-## Mudbase project (already provisioned — do not recreate)
+## Mudbase project (already provisioned - do not recreate)
 
 - Base URL: `https://cloud.mudbase.dev`
 - Project ID: `6a6d3faad07caabbbdfc56a6`
 - Publishable key: `pk_7d6f88a8d8537bdf00c8cc4a2ebf79ee` (safe client-side; currently unused by any
-  request — collection reads/writes are authorized by the user's bearer JWT, not the project key,
+  request - collection reads/writes are authorized by the user's bearer JWT, not the project key,
   mirroring the pattern already verified live in the social/ecommerce showcases)
 
 ## Data model
@@ -37,7 +37,7 @@ WebSocket client per language.
 | `budget` | number | required, > 0 |
 | `category` | string | optional |
 | `status` | string | `open` \| `in_progress` \| `completed`, default `open` |
-| `clientId` | string | the posting client's user id — set from the session on create, never client-editable after |
+| `clientId` | string | the posting client's user id - set from the session on create, never client-editable after |
 | `clientName` | string | denormalized display name, set on create |
 
 ### `proposals` (`6a6d3fcfd07caabbbdfc5896`)
@@ -79,12 +79,12 @@ auto-populated on `create`, not enforced as a read/update filter). This means:
 
 - The "own listing" / "own proposal" scoping above is enforced by **this app's queries and UI**
   (always filter by `clientId`/`freelancerId` matching the current session user, and only render
-  edit/accept/reject controls when the current user owns the record) — not by the platform
+  edit/accept/reject controls when the current user owns the record) - not by the platform
   rejecting a client filter for someone else's data. This is a known limitation acceptable for a
   reference/demo app, and is the same class of limitation already documented in the sibling
   ecommerce/social showcases' `mudbase.ts`.
 - Every `...Id` filter sent to Mudbase (`listingId`, `clientId`, `freelancerId`) must be a real
-  24-character hex ObjectId — Mudbase's query sanitizer rejects (and security-alerts on) any
+  24-character hex ObjectId - Mudbase's query sanitizer rejects (and security-alerts on) any
   top-level filter field ending in `Id` that isn't. All such values here are the real `_id`/`user.id`
   values returned by Mudbase itself, never invented constants.
 
@@ -93,35 +93,35 @@ auto-populated on `create`, not enforced as a read/update filter). This means:
 - `MudbaseProvider` establishes a session on mount: if a stored token exists, restore it via
   `GET /api/auth/session`; otherwise log in anonymously (`POST /api/auth/anonymous`) so the public
   listings feed can read without forcing signup (same "authenticated-role read" pattern as the
-  ecommerce/social showcases — an anonymous session still carries the platform's baseline
+  ecommerce/social showcases - an anonymous session still carries the platform's baseline
   "authenticated" read permission).
 - Real sign-in is `POST /api/auth/local/login` (shared demo accounts, or any real account created
   via `POST /api/auth/local/signup/client` or `/signup/freelancer`).
-- `useAuth().isAuthenticated` is true only for a real, non-anonymous session with a `customRole` —
+- `useAuth().isAuthenticated` is true only for a real, non-anonymous session with a `customRole` -
   gates every write action (post listing, submit proposal, send message, accept/reject).
 - Refresh-token handling: `MudbaseClient` stores both access + refresh tokens, uses a
   `refreshInFlight` promise to dedupe concurrent refreshes (refresh tokens are single-use/rotating),
   and `request()` retries exactly once after a transparent refresh on a 401. Ported directly from
   `mudbase-showcase-social/web/src/lib/mudbase.ts`.
 
-## Messaging visibility — design decision
+## Messaging visibility - design decision
 
 Chosen: **a listing's message thread is visible to the listing's client and the specific
 freelancer whose proposal on that listing has been accepted** (not every freelancer who applied).
 Rationale: this reads as "you're hired, now let's coordinate," is simple to reason about and test
 (exactly one freelancer ever has thread access per listing), and keeps the reference contract the
-9 other ports need to replicate small — one boolean check (`am I the client, or do I have an
+9 other ports need to replicate small - one boolean check (`am I the client, or do I have an
 accepted proposal on this listing`) rather than a dynamic applicant-list membership check.
 
 Enforcement is UI-level (message composer + thread view only render for the client or the accepted
-freelancer) plus the platform's collection-level create/read permission — see the known-limitation
+freelancer) plus the platform's collection-level create/read permission - see the known-limitation
 note above regarding document-level scoping.
 
 ## Page map
 
 | Route | Access | Purpose |
 |---|---|---|
-| `/` | public (anon session) | Browse listings — search, category filter, budget range, pagination |
+| `/` | public (anon session) | Browse listings - search, category filter, budget range, pagination |
 | `/login` | public | Sign in (shared demo accounts or any real account) |
 | `/register` | public | Real signup, choose role (client / freelancer) |
 | `/listings/[id]` | public read; role-gated actions | Full listing detail, proposal form (freelancer), proposals list + accept/reject (owning client), message thread (client + accepted freelancer) |
@@ -174,7 +174,7 @@ here so the other 9 ports don't have to rediscover them from scratch.
 
 ## Known limitations
 
-- Portfolio file upload to the public bucket was **not built** in this pass — the spec marked it
+- Portfolio file upload to the public bucket was **not built** in this pass - the spec marked it
   nice-to-have and explicitly said to prioritize the core listings/proposals/messages flow first.
   The `uploadFile()` method still exists on `MudbaseClient` for API-contract completeness (mirrors
   the ecommerce/social showcases) but nothing in the UI calls it yet.

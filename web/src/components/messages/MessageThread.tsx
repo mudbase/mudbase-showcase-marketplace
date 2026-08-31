@@ -44,7 +44,7 @@ export function MessageThread({ listingId, currentUserId, currentUserName }: Mes
         {isLoading && <p className="text-sm text-muted-foreground">Loading messages…</p>}
         {isError && <p className="text-sm text-destructive">Couldn&apos;t load messages.</p>}
         {!isLoading && !isError && messages.length === 0 && (
-          <p className="text-sm text-muted-foreground">No messages yet — say hello.</p>
+          <p className="text-sm text-muted-foreground">No messages yet - say hello.</p>
         )}
         {messages.map((message) => {
           const isOwn = message.senderId === currentUserId

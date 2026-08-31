@@ -4,8 +4,8 @@ import { z } from "zod";
  * Runtime validation for every Mudbase response shape this app touches.
  *
  * The generated `mudbase-sdk`'s auth response models (e.g. `LoginLocalUser200ResponseUser`,
- * `CreateAnonymousSession200ResponseUser`) omit `customRole` — even though the live API includes
- * it on every project-scoped session response, and this app's entire RBAC gating depends on it —
+ * `CreateAnonymousSession200ResponseUser`) omit `customRole` - even though the live API includes
+ * it on every project-scoped session response, and this app's entire RBAC gating depends on it -
  * the same gap the sibling `mudbase-showcase-kanban/mobile-expo` port's `schemas.ts` documents
  * against the same generated SDK. `GetLocalSession200Response.user` is typed as a bare `object`
  * for the same reason. Rather than casting past the generated types with `as`, every SDK response
@@ -17,7 +17,7 @@ import { z } from "zod";
  * document fields at all) and `results[].collection` as a plain string. The web reference's own
  * live smoke test (see ../../web/plan/build-plan.md) already verified the real deployed shape is
  * `{ results: [{ collection: {id,name,slug}, results: T[], pagination }], query, totalResults,
- * executionTime }` — a completely different structure. This is the same class of "generated type
+ * executionTime }` - a completely different structure. This is the same class of "generated type
  * under/mis-describes the real payload" gap, just at the response-shape level instead of a single
  * missing field, so it gets the identical treatment: widen to `unknown`, parse with
  * `searchResponseSchema` below instead of trusting the SDK's own `SearchResponse` type.
@@ -25,7 +25,7 @@ import { z } from "zod";
 
 // ─── Auth / User ────────────────────────────────────────────────────────────
 
-/** Role slugs this project's multi-role auth is configured with — see plan/build-plan.md. */
+/** Role slugs this project's multi-role auth is configured with - see plan/build-plan.md. */
 export const appRoleSchema = z.enum(["client", "freelancer"]);
 export type AppRole = z.infer<typeof appRoleSchema>;
 
@@ -36,7 +36,7 @@ export const mudbaseUserSchema = z.object({
   lastName: z.string(),
   customRole: z.string().nullable().optional(),
   emailVerified: z.boolean().optional(),
-  /** True only for the always-present guest session established at boot for public browsing —
+  /** True only for the always-present guest session established at boot for public browsing -
    * distinct from a real, role-carrying signed-in account. See useAuth.isAuthenticated. */
   isAnonymous: z.boolean().optional(),
 });
@@ -119,7 +119,7 @@ export const messageSchema = documentBaseSchema.extend({
 });
 export type Message = z.infer<typeof messageSchema>;
 
-// ─── Search (dedicated endpoint response — see the file-level doc comment) ────────────────────
+// ─── Search (dedicated endpoint response - see the file-level doc comment) ────────────────────
 
 const searchPaginationSchema = z.object({
   page: z.number(),

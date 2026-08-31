@@ -22,7 +22,7 @@ function RootNavigator(): React.JSX.Element {
   }, []);
 
   // Unlike the sibling mudbase-showcase-kanban port, this app has an anonymous guest session
-  // (see plan/build-plan.md "Auth flow"), so the tabs are always reachable once boot finishes —
+  // (see plan/build-plan.md "Auth flow"), so the tabs are always reachable once boot finishes -
   // there is no global "redirect to /login if unauthenticated" gate here. Individual screens
   // (post a listing, my listings/proposals, edit) gate themselves per-role instead, exactly
   // mirroring each web reference page's own per-page auth check.

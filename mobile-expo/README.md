@@ -1,7 +1,7 @@
-# Mudbase Showcase — Marketplace (mobile-expo)
+# Mudbase Showcase - Marketplace (mobile-expo)
 
-A freelance marketplace built **entirely on [Mudbase](https://www.mudbase.dev)** — auth, database,
-role-based access control, and search — with **zero custom backend**. This is the Expo/React
+A freelance marketplace built **entirely on [Mudbase](https://www.mudbase.dev)** - auth, database,
+role-based access control, and search - with **zero custom backend**. This is the Expo/React
 Native port of the reference [`../web`](../web) app: same Mudbase project, same three collections,
 same RBAC matrix, same data model, same messaging-visibility rule.
 
@@ -10,7 +10,7 @@ same RBAC matrix, same data model, same messaging-visibility rule.
 Expo Router (SDK 57) + TypeScript (strict) + NativeWind + TanStack Query + Zustand + Zod +
 react-hook-form, talking directly to `cloud.mudbase.dev` via the real generated
 [`mudbase-sdk`](https://github.com/mudbase/mudbase-sdk) (`AuthenticationApi` + `DataApi` +
-`SearchApi`) — no hand-rolled REST client (except one documented SDK gap, see below), no custom
+`SearchApi`) - no hand-rolled REST client (except one documented SDK gap, see below), no custom
 backend of any kind. Every request is made with the signed-in user's own JWT, or an anonymous
 guest session's for public browsing; there is no server-side code and no privileged credential
 anywhere in this app.
@@ -18,7 +18,7 @@ anywhere in this app.
 Architecture mirrors the sibling [`mudbase-showcase-kanban/mobile-expo`](../../mudbase-showcase-kanban/mobile-expo)
 port: same file layout (`src/api`, `src/config`, `src/lib`, `src/stores`, `src/providers`,
 `src/hooks`, `src/components/{ui,auth,layout,listings,proposals,messages,shared}`), same
-secure-token pattern. No Socket.IO here — this showcase polls instead (see `plan/build-plan.md`).
+secure-token pattern. No Socket.IO here - this showcase polls instead (see `plan/build-plan.md`).
 
 ## What it demonstrates
 
@@ -43,7 +43,7 @@ secure-token pattern. No Socket.IO here — this showcase polls instead (see `pl
 | Send/read messages (client + accepted freelancer only) | Yes | Yes |
 
 Mudbase's own collection permissions are the real server-side enforcement boundary; this app's
-UI-level gating only decides what renders, never what the platform allows — see
+UI-level gating only decides what renders, never what the platform allows - see
 `plan/build-plan.md` for the live verification notes and the known document-level-scoping
 limitation shared with the web reference.
 
@@ -56,7 +56,7 @@ npm run start           # or: npm run ios / npm run android / npm run web
 ```
 
 Sign in with one of the two demo accounts on the login screen's quick-fill buttons (or type
-credentials manually) — see `plan/build-plan.md` for account details and the live smoke-test notes.
+credentials manually) - see `plan/build-plan.md` for account details and the live smoke-test notes.
 
 ## Provisioning (already exists on Mudbase, not in this repo)
 
@@ -64,10 +64,10 @@ This app expects a Mudbase project already set up with:
 
 1. Local auth enabled with two role slugs: `client`, `freelancer`, plus anonymous sessions enabled
    for public listing reads.
-2. Three collections — `listings`, `proposals`, `messages` — with the field shapes documented in
+2. Three collections - `listings`, `proposals`, `messages` - with the field shapes documented in
    `plan/build-plan.md`, each role granted the permissions in the RBAC matrix above.
 
-`.env.example` lists every id this app needs — all values are `EXPO_PUBLIC_*` since none of them
+`.env.example` lists every id this app needs - all values are `EXPO_PUBLIC_*` since none of them
 are secret (every request authenticates with a JWT, real or anonymous, never a static key).
 
 ## Live smoke test
@@ -77,13 +77,13 @@ against the real project: client posts a listing → freelancer browses/searches
 accepts → both message → freelancer sees the accepted status, plus a confirmation that `$regex`
 is still correctly blocked and the `status`-field platform fix holds on both create and update.
 
-## Known limitations (real platform constraints, not bugs — carried forward from the web reference)
+## Known limitations (real platform constraints, not bugs - carried forward from the web reference)
 
-- **Document-level RBAC is enforced client-side**, not by the platform — Mudbase's collection
+- **Document-level RBAC is enforced client-side**, not by the platform - Mudbase's collection
   permissions are collection-level, not per-document. This app's own queries and UI are the "own
   listing" / "own proposal" scoping boundary, same limitation the web reference documents.
-- **No file/portfolio upload** — out of scope for this pass, same choice the web reference made.
-- **No `fields` projection** — the generated `mudbase-sdk`'s `DataApi.listData` has no `fields`
+- **No file/portfolio upload** - out of scope for this pass, same choice the web reference made.
+- **No `fields` projection** - the generated `mudbase-sdk`'s `DataApi.listData` has no `fields`
   parameter, so the two dashboard "sample" queries (category picker, proposal counts) fetch full
   documents instead of a narrowed field set. No functional difference, just a slightly larger
   payload than the web reference's equivalent raw-`fetch` calls.

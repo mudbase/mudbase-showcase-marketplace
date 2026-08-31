@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Freelance marketplace built entirely on Mudbase (auth, database, file storage) with zero custom backend — reference web implementation.",
+  "description": "Freelance marketplace built entirely on Mudbase (auth, database, file storage) with zero custom backend - reference web implementation.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

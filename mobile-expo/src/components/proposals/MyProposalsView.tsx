@@ -12,7 +12,7 @@ import { formatCurrency, formatRelativeTime, isObjectId } from "@/lib/format";
 
 const PAGE_SIZE = 10;
 
-/** Freelancer-only dashboard — the RN equivalent of web/src/app/proposals/page.tsx. */
+/** Freelancer-only dashboard - the RN equivalent of web/src/app/proposals/page.tsx. */
 export function MyProposalsView(): React.JSX.Element {
   const { user } = useAuth();
   const [page, setPage] = useState(1);

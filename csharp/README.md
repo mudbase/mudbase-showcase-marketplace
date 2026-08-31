@@ -1,7 +1,7 @@
-# Mudbase Showcase — Marketplace (C# / ASP.NET Core)
+# Mudbase Showcase - Marketplace (C# / ASP.NET Core)
 
 A freelance job marketplace, server-rendered with **ASP.NET Core 10 Razor Pages**, built **entirely
-on [Mudbase](https://www.mudbase.dev)** — auth, database, and role-based access control — with
+on [Mudbase](https://www.mudbase.dev)** - auth, database, and role-based access control - with
 **zero custom backend**. This is the C# port of the reference implementation in `../web/`
 (Next.js): same data model, same API contract, same RBAC matrix, against the same live project.
 
@@ -9,15 +9,15 @@ on [Mudbase](https://www.mudbase.dev)** — auth, database, and role-based acces
 
 ASP.NET Core 10, Razor Pages, the real [Mudbase C# SDK](https://github.com/mudbase/mudbase-sdk)
 (generated client, `mudbase-sdk/csharp`), talking directly to `cloud.mudbase.dev`. There is no
-database, no ORM, and no custom API of any kind in this app — every listing/proposal/message read
+database, no ORM, and no custom API of any kind in this app - every listing/proposal/message read
 or write goes straight to Mudbase's REST API through the generated SDK, authenticated with the
 signed-in user's own JWT (held server-side in ASP.NET Core session state, never exposed to client
-JS) — or, for anonymous browsing, a guest session bootstrapped the same way.
+JS) - or, for anonymous browsing, a guest session bootstrapped the same way.
 
 No client-side JS framework. Forms use plain HTML `<form method="post">` with ASP.NET Core's
 Razor Pages handler pattern (`asp-page-handler`) and antiforgery tokens; the message thread and
 proposal list refresh on every page load/POST-redirect-GET rather than via background polling (the
-reference Next.js app polls client-side with TanStack Query — see `plan/build-plan.md` for why this
+reference Next.js app polls client-side with TanStack Query - see `plan/build-plan.md` for why this
 port doesn't need an equivalent).
 
 ## What it demonstrates
@@ -45,9 +45,9 @@ port doesn't need an equivalent).
 
 The UI hides write controls a role/ownership combination cannot use, and every mutating Razor Page
 handler re-checks both the role **and** ownership of the specific document being mutated server-side
-via a fresh fetch from Mudbase — see `plan/build-plan.md`'s "Security: IDOR Discipline" section for
+via a fresh fetch from Mudbase - see `plan/build-plan.md`'s "Security: IDOR Discipline" section for
 the full audit and why this matters (a sibling port had a real IDOR here before being fixed).
-Neither of those is the ultimate enforcement boundary, though — Mudbase's own collection permissions
+Neither of those is the ultimate enforcement boundary, though - Mudbase's own collection permissions
 are.
 
 ## Getting started
@@ -63,7 +63,7 @@ dotnet run
 
 Then open `http://localhost:5000` (or whatever port `dotnet run` reports). Browse listings without
 signing in, or sign in with one of the two demo accounts via the login page's quick-fill buttons
-(or type credentials manually) — see `plan/build-plan.md` for account details and the RBAC/IDOR
+(or type credentials manually) - see `plan/build-plan.md` for account details and the RBAC/IDOR
 verification notes.
 
 > **.NET version note**: this project targets `net10.0`. If your machine only has an older SDK
@@ -72,8 +72,8 @@ verification notes.
 
 ## Configuration
 
-No `.env` files — configuration lives in `MudbaseShowcase.Marketplace/appsettings.json` (already
-pointed at the shared demo project; none of these values are secrets — a project/collection id is
+No `.env` files - configuration lives in `MudbaseShowcase.Marketplace/appsettings.json` (already
+pointed at the shared demo project; none of these values are secrets - a project/collection id is
 not sensitive) or the equivalent `Mudbase__<Key>` environment variables for a different deployment.
 See `appsettings.Example.json` at the repo root for the full key list with descriptions.
 

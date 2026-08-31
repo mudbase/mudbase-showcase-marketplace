@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="${listing.title} + ' — Marketplace'">Listing — Marketplace</title>
+  <title th:text="${listing.title} + ' - Marketplace'">Listing - Marketplace</title>
   <th:block th:replace="~{fragments/layout :: head-assets}"></th:block>
 </head>
 <body>
@@ -96,7 +96,7 @@
     <h2 class="section-title">Messages</h2>
     <p class="muted" style="margin-top:-8px">Visible to the client and the accepted freelancer.</p>
     <div class="message-thread">
-      <p th:if="${messages.isEmpty()}" class="muted">No messages yet — say hello.</p>
+      <p th:if="${messages.isEmpty()}" class="muted">No messages yet - say hello.</p>
       <div class="message-bubble" th:each="message : ${messages}" th:classappend="${message.senderId == currentUser.userId} ? 'message-own' : ''">
         <div class="message-avatar" th:text="${T(dev.mudbase.showcase.marketplace.support.Formatting).initials(message.senderName)}">??</div>
         <div class="message-content">

@@ -1,7 +1,7 @@
 /**
- * All values here are read from EXPO_PUBLIC_* env vars — Expo's convention for anything safe
+ * All values here are read from EXPO_PUBLIC_* env vars - Expo's convention for anything safe
  * to bundle into the client binary. A project/collection id is not a secret (see .env.example)
- * — every request this app makes authenticates with a JWT, either a real signed-in user's or an
+ * - every request this app makes authenticates with a JWT, either a real signed-in user's or an
  * anonymous guest session's (see plan/build-plan.md "Auth flow"), never a static key. There is
  * no server-only credential anywhere in this app, so nothing needs to live outside EXPO_PUBLIC_*.
  */

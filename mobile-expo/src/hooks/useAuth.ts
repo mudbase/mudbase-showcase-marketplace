@@ -18,7 +18,7 @@ interface UseAuthReturn {
   clearError: () => void;
 }
 
-/** Thin selector hook over the auth store — screens read/act through this, never the store
+/** Thin selector hook over the auth store - screens read/act through this, never the store
  * directly. Mirrors web/src/hooks/useAuth.ts's semantics exactly. */
 export function useAuth(): UseAuthReturn {
   const user = useAuthStore((s) => s.user);

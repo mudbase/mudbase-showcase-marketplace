@@ -15,7 +15,7 @@ function toIconColor(color: ColorValue): string {
 
 /**
  * Unlike the sibling mudbase-showcase-kanban port, this app has no global "must sign in first"
- * gate here — an anonymous guest session covers public browsing (see plan/build-plan.md "Auth
+ * gate here - an anonymous guest session covers public browsing (see plan/build-plan.md "Auth
  * flow"), so both tabs are always reachable. The "You" tab renders a role-appropriate dashboard
  * (client → my listings, freelancer → my proposals, guest → a sign-in prompt) rather than
  * redirecting away.

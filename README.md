@@ -1,7 +1,7 @@
-# Mudbase Showcase — Marketplace
+# Mudbase Showcase - Marketplace
 
-A freelance marketplace built **entirely on [Mudbase](https://www.mudbase.dev)** — auth, database,
-realtime, and file storage — with **zero custom backend**. The same app, reimplemented once per
+A freelance marketplace built **entirely on [Mudbase](https://www.mudbase.dev)** - auth, database,
+realtime, and file storage - with **zero custom backend**. The same app, reimplemented once per
 official Mudbase SDK, so every supported language has a real, runnable reference app rather than a
 toy snippet.
 
@@ -24,7 +24,7 @@ freelancer), job listings with search & filtering, proposals, and in-app messagi
 | [`php/`](./php) | Server-rendered web app | PHP |
 | [`swift/`](./swift) | iOS app (SwiftUI) | Swift |
 
-Each directory is self-contained with its own README, dependency manifest, and `.env.example` —
+Each directory is self-contained with its own README, dependency manifest, and `.env.example` -
 clone this repo and only set up the language you care about.
 
 ## Prerequisite: clone the SDK repo as a sibling
@@ -42,11 +42,11 @@ some-folder/
 
 ## Data model & roles
 
-- **listings** — `title`, `description`, `budget`, `category?`, `status` (`open`/`in_progress`/
+- **listings** - `title`, `description`, `budget`, `category?`, `status` (`open`/`in_progress`/
   `completed`), `clientId`, `clientName`
-- **proposals** — `listingId`, `freelancerId`, `freelancerName`, `coverLetter`, `proposedRate`,
+- **proposals** - `listingId`, `freelancerId`, `freelancerName`, `coverLetter`, `proposedRate`,
   `status` (`pending`/`accepted`/`rejected`)
-- **messages** — `listingId`, `senderId`, `senderName`, `content`
+- **messages** - `listingId`, `senderId`, `senderName`, `content`
 
 Roles: **client** (posts/manages own listings, reviews proposals), **freelancer** (browses
 listings, submits/manages own proposals). Both roles can message on a listing. Auth, users,
@@ -54,4 +54,4 @@ realtime, and file storage (for portfolio uploads) are all native Mudbase featur
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT - see [LICENSE](./LICENSE).

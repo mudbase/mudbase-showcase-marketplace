@@ -17,7 +17,7 @@ interface SelectFieldProps<T extends string> {
 }
 
 /**
- * There is no native RN `<select>` — this renders the current value as a pressable field that
+ * There is no native RN `<select>` - this renders the current value as a pressable field that
  * opens a small centered `Modal` listing every option as a tappable row, the same pattern the
  * sibling `mudbase-showcase-kanban/mobile-expo` port's `MoveCardPicker` uses for its own "pick one
  * of a short list" interaction. Used for the listing category filter, the listing status field,

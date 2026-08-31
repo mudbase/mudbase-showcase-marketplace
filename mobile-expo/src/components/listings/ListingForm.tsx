@@ -11,11 +11,11 @@ import { LISTING_STATUSES, listingStatusLabel, type ListingStatus } from "@/api/
 // the web reference's ListingForm does) keeps `useForm`'s generic inference simple under strict
 // TypeScript: a runtime ternary between two structurally-different ZodObjects otherwise confuses
 // the resolver's generic to the point of dropping the `status` key entirely. `budget` is plain
-// `z.number()` rather than `z.coerce.number()` for the same reason — RHF's `Controller` already
+// `z.number()` rather than `z.coerce.number()` for the same reason - RHF's `Controller` already
 // hands this component a numeric string from the `TextField`'s `onChangeText`, converted to a
 // real `number` before it reaches `onChange` (see below), so there is nothing left to coerce.
 // `status` is optional here since it is never registered/validated as a rendered input in
-// "create" mode — it only round-trips through `defaultValues`/`setValue`, always with a valid
+// "create" mode - it only round-trips through `defaultValues`/`setValue`, always with a valid
 // value already in hand.
 const schema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(120, "Title is too long"),

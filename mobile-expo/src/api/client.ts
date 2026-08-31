@@ -14,14 +14,14 @@ import {
 } from "./schemas";
 
 /**
- * Thin, typed wrapper around the real generated `mudbase-sdk` — same mechanism the sibling
+ * Thin, typed wrapper around the real generated `mudbase-sdk` - same mechanism the sibling
  * `mudbase-showcase-kanban/mobile-expo` port uses: real generated `*Api` class instances
  * (`AuthenticationApi`/`DataApi`/`SearchApi`), not a unified client the SDK doesn't ship. Every
  * generated method takes a single `requestParameters` object (e.g.
- * `loginLocalUser({ loginLocalUserRequest: {...} })`), NOT positional arguments — calling
+ * `loginLocalUser({ loginLocalUserRequest: {...} })`), NOT positional arguments - calling
  * positionally throws a client-side `RequiredError` before any request reaches the network.
  *
- * Unlike the kanban port, this app DOES have an anonymous/guest session (`loginAnonymous()`) —
+ * Unlike the kanban port, this app DOES have an anonymous/guest session (`loginAnonymous()`) -
  * this project's `listings` collection grants public read to any authenticated-or-anonymous
  * session, matching the web reference's `MudbaseProvider` bootstrap (see
  * plan/build-plan.md "Auth flow"). Posting listings, submitting proposals, and messaging still
@@ -30,9 +30,9 @@ import {
  * `register()` bypasses the generated SDK entirely and calls the REST endpoint directly with a
  * plain `axios` request. The SDK's `AuthenticationApi.registerLocalUser` posts to the generic
  * `/api/auth/local/register` with a body typed `{ email, password, firstName, lastName,
- * projectId }` — no `role` and no `agreedToTerms` field exist on that generated request type at
+ * projectId }` - no `role` and no `agreedToTerms` field exist on that generated request type at
  * all. This app (like the web reference) needs the role-specific `/api/auth/local/signup/{role}`
- * endpoint with `agreedToTerms` in the body (the signup validator rejects requests missing it) —
+ * endpoint with `agreedToTerms` in the body (the signup validator rejects requests missing it) -
  * a real, verified gap in the generated SDK's coverage, not a bug in this client. This is the same
  * class of "generated SDK under-describes the real API" gap already documented in schemas.ts, just
  * surfacing as a missing operation instead of a missing response field.
@@ -70,7 +70,7 @@ export interface RegisterParams {
   firstName: string;
   lastName: string;
   role: AppRole;
-  /** Required by Mudbase's registration validator — a direct API call without it is rejected. */
+  /** Required by Mudbase's registration validator - a direct API call without it is rejected. */
   agreedToTerms: boolean;
 }
 
@@ -142,13 +142,13 @@ class MudbaseClient {
 
   /**
    * Refresh tokens rotate on every use and a reused one revokes the session (platform reuse-
-   * detection) — this in-flight promise is shared across concurrent 401s to guarantee at most one
+   * detection) - this in-flight promise is shared across concurrent 401s to guarantee at most one
    * refresh call per expiry, never a stampede that would trip reuse-detection itself. Faithful
    * port of web/src/lib/mudbase.ts's `refreshAccessToken()` / `refreshInFlight`.
    */
   private async refreshSession(): Promise<void> {
     if (!this.refreshTokenValue) {
-      throw new MudbaseApiError("No refresh token available — sign in again.", 401);
+      throw new MudbaseApiError("No refresh token available - sign in again.", 401);
     }
     if (!this.refreshing) {
       this.refreshing = (async (): Promise<void> => {
@@ -183,13 +183,13 @@ class MudbaseClient {
 
   // ─── Auth ─────────────────────────────────────────────────────────────────
 
-  /** Real, role-carrying signup. Bypasses the generated SDK — see the file-level doc comment. */
+  /** Real, role-carrying signup. Bypasses the generated SDK - see the file-level doc comment. */
   async register(params: RegisterParams): Promise<MudbaseUser> {
     const { role, ...body } = params;
     try {
       // The signup validator explicitly rejects `role`/`customRole` in the request body
       // (`.unknown(false)`, a deliberate anti-role-injection control, ported forward from
-      // web/src/lib/mudbase.ts) — the role is taken only from the URL path segment, so it must
+      // web/src/lib/mudbase.ts) - the role is taken only from the URL path segment, so it must
       // not be spread into the body too.
       const res = await axios.post<AuthResult>(
         `${MUDBASE_URL}/api/auth/local/signup/${role}`,
@@ -200,7 +200,7 @@ class MudbaseClient {
       if (!parsed.token || !parsed.refreshToken || !parsed.user) {
         throw new MudbaseApiError(
           parsed.requireVerification
-            ? "Account created — check your email to verify before signing in."
+            ? "Account created - check your email to verify before signing in."
             : "Registration response was missing tokens.",
           parsed.requireVerification ? 201 : 500,
         );
@@ -238,7 +238,7 @@ class MudbaseClient {
   }
 
   /** Guest browsing: lets the public listings feed's "authenticated" read permission resolve
-   * without forcing signup — see plan/build-plan.md "Auth flow". Ported from
+   * without forcing signup - see plan/build-plan.md "Auth flow". Ported from
    * web/src/lib/mudbase-provider.tsx's own anonymous bootstrap. */
   async loginAnonymous(): Promise<MudbaseUser> {
     try {
@@ -261,13 +261,13 @@ class MudbaseClient {
     try {
       await this.authApi.logoutLocalUser();
     } catch {
-      // Best-effort server-side revoke — always clear local tokens regardless.
+      // Best-effort server-side revoke - always clear local tokens regardless.
     } finally {
       await this.clearTokens();
     }
   }
 
-  /** Returns null (rather than throwing) when there is no valid session — the caller (authStore)
+  /** Returns null (rather than throwing) when there is no valid session - the caller (authStore)
    * falls back to establishing a fresh anonymous session in that case. */
   async getSession(): Promise<MudbaseUser | null> {
     if (!this.token) return null;
@@ -343,9 +343,9 @@ class MudbaseClient {
 
   /**
    * Server-side keyword search across a collection's string fields (title/description/name/
-   * content/email). This is the real search surface — the collection-data `filter` param cannot
+   * content/email). This is the real search surface - the collection-data `filter` param cannot
    * do substring search: `$regex` (and `$text`'s `$search`) are on the deployed query sanitizer's
-   * dangerous-operator blocklist and always 400 (see plan/build-plan.md — this is a deliberate DoS
+   * dangerous-operator blocklist and always 400 (see plan/build-plan.md - this is a deliberate DoS
    * guard, not a bug, and it applies here exactly as it does in the web reference). `collections`
    * takes the collection's slug (see LISTINGS_COLLECTION_SLUG), not its `_id`.
    */

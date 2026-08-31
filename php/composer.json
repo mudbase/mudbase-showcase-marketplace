@@ -1,6 +1,6 @@
 {
     "name": "mudbase/showcase-marketplace-php",
-    "description": "Mudbase Marketplace — PHP reimplementation of the Mudbase showcase freelance marketplace. Plain PHP, no framework, backed entirely by the real Mudbase PHP SDK.",
+    "description": "Mudbase Marketplace - PHP reimplementation of the Mudbase showcase freelance marketplace. Plain PHP, no framework, backed entirely by the real Mudbase PHP SDK.",
     "type": "project",
     "license": "unlicense",
     "require": {

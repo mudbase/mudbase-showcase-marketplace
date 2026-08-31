@@ -37,7 +37,7 @@ export function initials(name: string): string {
 const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i;
 
 /** Mudbase's query sanitizer rejects any top-level filter field ending in "Id" that isn't a
- * real ObjectId — see plan/build-plan.md. */
+ * real ObjectId - see plan/build-plan.md. */
 export function isObjectId(value: string | null | undefined): value is string {
   return typeof value === "string" && OBJECT_ID_PATTERN.test(value);
 }

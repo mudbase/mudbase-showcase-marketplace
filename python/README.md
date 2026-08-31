@@ -1,14 +1,14 @@
-# Mudbase Showcase — Marketplace (Python)
+# Mudbase Showcase - Marketplace (Python)
 
 Server-rendered FastAPI + Jinja2 port of the freelance marketplace showcase. Same Mudbase
-project, data model, and RBAC as the reference Next.js app in `../web` — see
+project, data model, and RBAC as the reference Next.js app in `../web` - see
 `plan/build-plan.md` for the full architecture writeup.
 
 ## Stack
 
 - FastAPI + Jinja2, Python 3.12+
-- Real Mudbase Python SDK (`mudbase-sdk`, installed from GitHub — see `requirements.txt`)
-- Starlette `SessionMiddleware` — the Mudbase JWT lives only in a signed, httpOnly session
+- Real Mudbase Python SDK (`mudbase-sdk`, installed from GitHub - see `requirements.txt`)
+- Starlette `SessionMiddleware` - the Mudbase JWT lives only in a signed, httpOnly session
   cookie, never sent to browser JS
 - mypy `--strict` clean
 
@@ -41,8 +41,8 @@ exact values, or use the "Demo client" / "Demo freelancer" quick sign-in buttons
 
 ## Feature set
 
-- Browse listings — keyword search, category filter, budget range, pagination
-- Listing detail — full description, proposal submission (freelancer), proposal review with
+- Browse listings - keyword search, category filter, budget range, pagination
+- Listing detail - full description, proposal submission (freelancer), proposal review with
   accept/reject (owning client), per-listing messaging (client + accepted freelancer)
 - Post / edit a listing (client)
 - "My listings" (client) and "My proposals" (freelancer) views

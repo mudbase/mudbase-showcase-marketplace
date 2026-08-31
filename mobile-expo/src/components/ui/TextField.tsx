@@ -9,11 +9,11 @@ export interface TextFieldProps extends TextInputProps {
 
 /**
  * React Hook Form's `register()` binds directly to DOM `<input>` refs and does not work with
- * React Native's `TextInput` — RN integration requires `Controller`, so every form in this app
+ * React Native's `TextInput` - RN integration requires `Controller`, so every form in this app
  * wraps this component in a `<Controller render={({ field }) => <TextField {...field} .../>} />`
  * rather than calling `register()` the way the web reference app does. Multiline usage (the
  * description/cover-letter/message fields) just passes `multiline` + `numberOfLines` through the
- * spread `TextInputProps` — no separate "Textarea" component is needed on RN.
+ * spread `TextInputProps` - no separate "Textarea" component is needed on RN.
  */
 export function TextField({
   label,

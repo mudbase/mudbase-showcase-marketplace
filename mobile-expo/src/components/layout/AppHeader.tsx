@@ -18,7 +18,7 @@ const roleLabel: Record<"client" | "freelancer", string> = {
 
 /**
  * A small per-screen header (title, current-user identity, sign-in/out) shown at the top of
- * every tab screen's content — the RN equivalent of web/src/components/layout/Header.tsx, since
+ * every tab screen's content - the RN equivalent of web/src/components/layout/Header.tsx, since
  * Expo Router's native stack header does not carry per-role state naturally and there is no
  * meaningful mobile equivalent of a persistent sticky web header across a bottom-tab layout.
  */

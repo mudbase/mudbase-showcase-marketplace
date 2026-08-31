@@ -18,7 +18,7 @@ const STATUS_VARIANT: Record<ListingStatus, BadgeVariant> = {
   completed: "secondary",
 };
 
-/** Client-only dashboard — the RN equivalent of web/src/app/listings/mine/page.tsx. */
+/** Client-only dashboard - the RN equivalent of web/src/app/listings/mine/page.tsx. */
 export function MyListingsView(): React.JSX.Element {
   const { user } = useAuth();
   const [page, setPage] = useState(1);
